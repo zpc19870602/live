@@ -1,0 +1,7 @@
+{"urls": [
+{"url": "https://mirror.ghproxy.com/raw.githubusercontent.com/lxhfans/fans/master/tv.txt","name":"☘️朋仔┃主力☘️"},
+{"url": "https://mirror.ghproxy.com/raw.githubusercontent.com/lxhfans/fans/master/tv1.txt","name":"🍓朋仔┃备用🍓"},
+{"url": "https://mirror.ghproxy.com/raw.githubusercontent.com/lxhfans/fans/master/duanju.json","name":"🌱朋仔┃短剧🌱"},
+{"url": "https://mirror.ghproxy.com/raw.githubusercontent.com/lxhfans/fans/master/zh.txt","name":"🍑朋仔┃综合🍑"}
+]
+}
