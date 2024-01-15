@@ -1,6 +1,0 @@
-{"urls": [
-{"url": "https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/zl.txt","name":"☘️朋仔|┃主力☘️"},
-{"url": "https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/wo4k.txt","name":"🍓朋仔|玩偶4K专线🍓"},
-{"url": "https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/duanju.txt","name":"🌱朋仔|短剧🌱"}
-]
-}
