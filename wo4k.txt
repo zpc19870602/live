@@ -1,0 +1,5 @@
+{ 
+"spider":"https://cloud.lxweb.cn/f/GVDASg/fm.jar;md5;5543dae038ce2248e7759e9cbca295b9",
+"wallpaper":"http://maoyingshi.cc/api.php",
+"sites":[{"key": "csp_WoGG1","name": "👽朋仔┃4K玩偶专线","type": 3,"api": "csp_WoGG","searchable": 1,"quickSearch": 1,"changeable": 0,"ext": "http://127.0.0.1:9978/file/TVBox/jar/alitoken.txt+4k|auto|fhd$$$https://wogg.xyz/$$$弹"}]
+ }
