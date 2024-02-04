@@ -1,0 +1,10 @@
+
+{
+"storeHouse":
+[
+
+{"sourceName":"朋仔✈️主力","sourceUrl":"https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/zx.txt"},
+{"sourceName":"朋仔🍵绿茶","sourceUrl":"https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/cha.json"}
+
+]
+}
