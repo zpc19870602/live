@@ -1373,5 +1373,5 @@
     "cms.qdwght.com"
   ],
   "wallpaper": "https://tool.weetai.cn/api/images/05.png",
-  "spider": "https://agit.ai/376242575/zzh/src/branch/master/jar/影视.jar"
+  "spider": "https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/影视.jar"
 }
