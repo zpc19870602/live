@@ -8,6 +8,7 @@
         {"url": "http://xhww.fun:63/小米/DEMO.json","name": "⚜️小米线路"},
         {"url": "http://刚刚.live/猫","name": "⚜️刚刚线路"},
         {"url": "https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/A.txt","name": "🍵绿茶影院(优选)"},
-        {"url": "https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/sryy.txt ","name": "🌈私人影院"},
+        {"url": "https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/sryy.txt","name": "🌈私人影院"},
+        {"url": "https://agit.ai/376242575/A1/raw/commit/9c886035171847516a26824c202d95dad07adc4c/A1.json","name": "🌈全网直播间"},
         {"url": "https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/duanju.json","name": "⚜️朋仔|短剧"}
 ]}
