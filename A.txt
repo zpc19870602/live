@@ -71,10 +71,10 @@
 {"key":" ♥️天天传媒","name": "♥️天天国产传媒","type":3,"api":"csp_XBPQ","playerType":2,"searchable":1,"quickSearch":1,"filterable":1,"ext":"https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/天天国产传媒.json","jar":"https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/xbpq新版.jar"},
 {"key":"♥️AV解说     ","name":"❤天天AV解说","type":3,"api":"csp_XBPQ","playerType":2,"searchable":1,"quickSearch":1,"filterable":1,"ext":"https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/天天AV解说.json","jar":"https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/xbpq新版.jar"},
 {"key":" ♥️色花堂  ", "name": "♥️色花堂","type":3,"api":"csp_XBPQ","searchable":1,"quickSearch":1,"filterable":1,"ext":"https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/色花堂xbpq.json","jar":"https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/xbpq新版.jar"},
-//{"key":"♥️csp_Doll  ","name":"❤玩偶姐姐 (墙)","type":3,"api":"csp_Doll","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://gitee.com/wuyougouwu/tvsource/raw/master/jar/18av%E4%B8%93%E7%94%A8.jar"},
-//{"key":"♥️csp_Jable","name":"❤Jable (墙)","type":3,"api":"csp_Jable","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://gitee.com/wuyougouwu/tvsource/raw/master/jar/18av%E4%B8%93%E7%94%A8.jar"},
-{"key":"♥️csp_Miss ","name":"❤Miss AV (墙)","type":3,"api":"csp_Miss","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://gitee.com/wuyougouwu/tvsource/raw/master/jar/18av%E4%B8%93%E7%94%A8.jar"}
-//{"key":"♥️   Hanime","name":"❤Hanime (墙)","type":3,"api":"csp_Hanime","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://gitee.com/wuyougouwu/tvsource/raw/master/jar/18av%E4%B8%93%E7%94%A8.jar"}
+//{"key":"♥️csp_Doll  ","name":"❤玩偶姐姐 (墙)","type":3,"api":"csp_Doll","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/18av专用.jar"},
+//{"key":"♥️csp_Jable","name":"❤Jable (墙)","type":3,"api":"csp_Jable","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/18av专用.jar"},
+{"key":"♥️csp_Miss ","name":"❤Miss AV (墙)","type":3,"api":"csp_Miss","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/18av专用.jar"}
+//{"key":"♥️   Hanime","name":"❤Hanime (墙)","type":3,"api":"csp_Hanime","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/18av专用.jar"}
 
  ],
 "lives": [
