@@ -15,6 +15,8 @@
         "from": "4k|auto|fhd",
         "siteUrl": "https://api.wogg.xyz/",
         "danMu": "弹"
-      }
+      },
+{"key":"♥️朋仔映画  ","name":"❤朋仔映画","type":3,"api":"csp_xBPQ","searchable":1,"quickSearch":1,"filterable":1,"ext":"https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/朋仔映画.json","jar":"https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/Yoursmile2.jar"},
+{"key": "♥️朋仔直播","name": "♥️朋仔直播","type": 3,"api": "csp_xBPQ","searchable": 1,"quickSearch": 1,"filterable": 0,"ext": "https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/新香蕉实时直播.json","jar":"https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/Yoursmile2.jar"}
     }]
  }
