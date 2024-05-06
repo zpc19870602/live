@@ -3,7 +3,9 @@
 "storeHouse":
 [
 
-{"sourceName":"朋仔✈️主力","sourceUrl":"https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/zx.txt"}
+{"sourceName":"朋仔✈️Github|首选","sourceUrl":"https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/master/zx.txt"},
+{"sourceName":"朋仔✈️Gitee|禁H","sourceUrl":"https://gitee.com/zpccool/live/raw/master/zx.txt"},
+{"sourceName":"朋仔✈️天霜|备用","sourceUrl":"https://cloud.lxweb.cn/f/QBdAH1/zx.txt"}
 
 ]
 }
