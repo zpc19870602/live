@@ -1,29 +1,18 @@
 { 
-  "spider": "https://fs-im-kefu.7moor-fs1.com/ly/4d2c3f00-7d4c-11e5-af15-41bf63ae4ea0/1712916456808/fan.txt;md5;29b4ef28be2f88e3ae3f37682e19e309",
+  "spider": "https://fs-im-kefu.7moor-fs1.com/ly/4d2c3f00-7d4c-11e5-af15-41bf63ae4ea0/1714982657770/fan.txt;md5;5c80b7ff2b016f49144335e5c48883c5",
   "wallpaper": "https://深色壁纸.xxooo.cf/",
-  "sites": [{
-      "key": "玩偶",
-      "name": "👽朋仔┃4K弹幕",
-      "type": 3,
-      "api": "csp_WoGG",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 0,
-      "ext": {
-        "aliToken": "tvfan/token.txt",
-        "quarkCookie": "tvfan/cookie.txt",
-        "from": "4k|auto|fhd",
-        "siteUrl": "https://api.wogg.xyz/",
-        "danMu": "弹"
-      }
-    },
-//{"key":"♥️朋仔|映画  ","name":"❤朋仔|映画","type":3,"api":"csp_xBPQ","searchable":1,"quickSearch":1,"filterable":1,"ext":"https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/朋仔映画.json","jar":"https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/Yoursmile2.jar"},
+  "sites": [{"key":"玩偶","name":"👽玩偶哥哥┃4K弹幕","type":3,"api":"csp_WoGG","searchable":1,"quickSearch":1,"changeable":0, "ext": {"aliToken":"tvfan/token.txt","quarkCookie":"tvfan/cookie.txt","from":"4k|auto|fhd","siteUrl":"https://www.wogg.link/","danMu":"弹"}},
+//{"key":"♥️朋仔|映画  ","name":"❤朋仔|映画","type":3,"api":"csp_xBPQ","searchable":1,"quickSearch":1,"filterable":1,"ext":"https://gitee.com/zpccool/live/raw/master/朋仔映画.json","jar":"https://gitee.com/zpccool/live/raw/master/Yoursmile2.jar"},
+{"key": "csp_KungFu404","name":"🎦朋仔|阿里设置","type": 3, "api": "csp_KungFu404", "searchable":1,"filterable": 0, "changeable":0,"jar":"https://gitee.com/zpccool/live/raw/master/alisz.jar"},
+{"key": "js豆瓣","name": "🌎朋仔|豆瓣","type": 3,"api":"https://gitee.com/zpccool/live/raw/master/drpy2.min.js","ext": "https://gitee.com/zpccool/live/raw/master/drpy.js","jar":"https://gitee.com/zpccool/live/raw/master/fm.jar"},
 {"key": "🦊朋仔|火狐","name": "🦊朋仔|火狐","type": 1,"api": "https://hhzyapi.com/api.php/provide/vod/","searchable": 1,"quickSearch": 0,"filterable": 1,"categories": ["内地剧","动作片","科幻片","战争片","喜剧片","爱情片","恐怖片","犯罪片","灾难片","悬疑片","剧情片","冒险片","记录片","韩剧","香港剧","台湾剧","欧美剧","日剧","马泰剧","体育赛事","大陆综艺","日韩综艺","港台综艺","欧美综艺","短剧","动画片","中国动漫","日本动漫","欧美动漫","伦理片"]},
-{"key":"♥️朋仔|超清  ","name":"❤朋仔|超清","type":3,"api":"csp_xBPQ","searchable":1,"quickSearch":1,"filterable":1,"ext":"https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/朋仔超清.json","jar":"https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/Yoursmile2.jar"},
-{"key":"♥️朋仔|传媒  ","name":"❤朋仔|传媒","type":3,"api":"csp_xBPQ","searchable":1,"quickSearch":1,"filterable":1,"ext":"https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/朋仔传媒.json","jar":"https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/Yoursmile2.jar"},
-{"key":"♥️朋仔|废材  ","name":"❤朋仔|废材","type":3,"api":"csp_xBPQ","searchable":1,"quickSearch":1,"filterable":1,"ext":"https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/朋仔废材.json","jar":"https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/Yoursmile2.jar"},
-{"key":"♥️朋仔|解说  ","name":"❤朋仔|解说","type":3,"api":"csp_xBPQ","searchable":1,"quickSearch":1,"filterable":1,"ext":"https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/朋仔解说.json","jar":"https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/Yoursmile2.jar"},
-{"key":"♥️朋仔|久久  ","name":"❤朋仔|久久","type":3,"api":"csp_xBPQ","searchable":1,"quickSearch":1,"filterable":1,"ext":"https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/朋仔久久.json","jar":"https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/Yoursmile2.jar"},
-{"key":"♥️朋仔|中文  ","name":"❤朋仔|中文","type":3,"api":"csp_xBPQ","searchable":1,"quickSearch":1,"filterable":1,"ext":"https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/朋仔中文.json","jar":"https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/Yoursmile2.jar"},
-{"key": "♥️朋仔|直播","name": "♥️朋仔|直播","type": 3,"api": "csp_xBPQ","searchable": 1,"quickSearch": 1,"filterable": 0,"ext": "https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/朋仔直播.json","jar":"https://mirror.ghproxy.com/raw.githubusercontent.com/zpc19870602/live/main/Yoursmile2.jar"}]
+{"key":"drpy_js_南瓜App","name":"🎃朋仔|南瓜","type":3,"api":"https://gitee.com/wuyougouwu/tvsource/raw/master/JS/lib/drpy2.min.js","ext":"https://cloud.lxweb.cn/f/1klqfe/%E5%8D%97%E7%93%9C.js","jar":"https://gitee.com/zpccool/live/raw/master/fm.jar"},
+{"key":"酷看","name":"💡朋仔|酷看","type":3,"api":"csp_Kkys","timeout":15,"searchable":1,"quickSearch":1,"changeable":1},
+//{"key":"♥️朋仔|超清  ","name":"❤朋仔|超清","type":3,"api":"csp_xBPQ","searchable":1,"quickSearch":1,"filterable":1,"ext":"https://gitee.com/zpccool/live/raw/master/朋仔超清.json","jar":"https://gitee.com/zpccool/live/raw/master/Yoursmile2.jar"},
+//{"key":"♥️朋仔|传媒  ","name":"❤朋仔|传媒","type":3,"api":"csp_xBPQ","searchable":1,"quickSearch":1,"filterable":1,"ext":"https://gitee.com/zpccool/live/raw/master/朋仔传媒.json","jar":"https://gitee.com/zpccool/live/raw/master/Yoursmile2.jar"},
+//{"key":"♥️朋仔|废材  ","name":"❤朋仔|废材","type":3,"api":"csp_xBPQ","searchable":1,"quickSearch":1,"filterable":1,"ext":"https://gitee.com/zpccool/live/raw/master/朋仔废材.json","jar":"https://gitee.com/zpccool/live/raw/master/Yoursmile2.jar"},
+{"key":"♥️朋仔|解说  ","name":"❤朋仔|解说","type":3,"api":"csp_xBPQ","searchable":1,"quickSearch":1,"filterable":1,"ext":"https://gitee.com/zpccool/live/raw/master/朋仔解说.json","jar":"https://gitee.com/zpccool/live/raw/master/Yoursmile2.jar"},
+//{"key":"♥️朋仔|久久  ","name":"❤朋仔|久久","type":3,"api":"csp_xBPQ","searchable":1,"quickSearch":1,"filterable":1,"ext":"https://gitee.com/zpccool/live/raw/master/朋仔久久.json","jar":"https://gitee.com/zpccool/live/raw/master/Yoursmile2.jar"},
+//{"key":"♥️朋仔|中文  ","name":"❤朋仔|中文","type":3,"api":"csp_xBPQ","searchable":1,"quickSearch":1,"filterable":1,"ext":"https://gitee.com/zpccool/live/raw/master/朋仔中文.json","jar":"https://gitee.com/zpccool/live/raw/master/Yoursmile2.jar"},
+{"key": "♥️朋仔|直播","name": "♥️朋仔|直播","type": 3,"api": "csp_xBPQ","searchable": 1,"quickSearch": 1,"filterable": 0,"ext": "https://gitee.com/zpccool/live/raw/master/朋仔直播.json","jar":"https://gitee.com/zpccool/live/raw/master/Yoursmile2.jar"}]
  }
