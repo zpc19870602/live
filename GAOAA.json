@@ -1,5 +1,5 @@
 {
-"ad_blocking_rules": {"ad_keywords": ["/baidu/index.html"", "棋牌"],"ad_domains": ["cbu01.alicdn.com"]},
+"ad_blocking_rules": {"ad_keywords": ["baidu", "棋牌"],"ad_domains": ["cbu01.alicdn.com"]},
 "站名":"GAOAA",
 "主页url":"https://20gaoab.com/",
 "图片":"data-original=\"&&\"",
