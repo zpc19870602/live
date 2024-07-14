@@ -1,6 +1,6 @@
 {
 "站名":"GAOAA",
-"主页url":"https://20gaoab.com/",
+"主页url":"https://26gaoab.com/",
 "图片":"data-original=\"&&\"",
 "标题":"title=\"&&\"",
 "链接":"href=\"&&\"",
@@ -10,7 +10,7 @@
 "搜索url":"/gaosearch/{wd}-/page/{pg}/",
 "搜索模式":"1",
 "搜索副标题":"<div class=\"img-tag\">&&</div>",
-"搜索链接前缀":"https://20gaoab.com",
+"搜索链接前缀":"https://26gaoab.com",
 "搜索链接后缀":"-1-1.html",
 "搜索后缀":"/gaoplay/",
 "播放数组":"class=\"item line\">&&</div>",
@@ -23,7 +23,7 @@
 "播放链接":"href=\"&&\"",
 "免嗅":"0",
 "分类":"点击我可筛选，有广告请注意，默认国产视频区$25",
-"分类url":"https://20gaoab.com/gaotype/{cateId}_{catePg}.html",
+"分类url":"https://26gaoab.com/gaotype/{cateId}_{catePg}.html",
 "筛选":{
 "25":[
 {
