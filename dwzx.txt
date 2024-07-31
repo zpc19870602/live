@@ -1,4 +1,4 @@
 {
     "urls": [
-{"url": "https://gitee.com/zpccool/live/raw/master/wo4k.txt","name": "⚜️朋仔|专线"}
+{"url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/zpc19870602/live/main/wo4k.txt","name": "⚜️朋仔|专线"}
 ]}
