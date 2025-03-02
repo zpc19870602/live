@@ -17,19 +17,7 @@
 "简介":"<p>&&</p>",
 "分类url":"https://www.ttszb9.com/?vip={cateId}/zb/{class}.html",
   "嗅探": "yes",
-  "嗅探类型": "正则",
-  "嗅探规则": "(https?:\\\\/\\\\/[^\\\\s'\"]+?\\\\.m3u8)",  // 精准匹配.m3u8的完整URL
   "免嗅": "0",
-  "播放前缀": "",
-  "播放后缀": "",
-  "播放特征": "\\.m3u8|\\.flv|\\.mp4|\\.ts|\\.m3u",
-  "超时": 30,
-  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-  "协议头修正": {
-    "http:": "https:",
-    "//": "https://",  // 强制补全协议头
-    "edge-hls.doppiocdn.com": "https://edge-hls.doppiocdn.com"  // 显式指定CDN协议
-  },
 "筛选":{
 "xxj/zb/kwy":[
 {
