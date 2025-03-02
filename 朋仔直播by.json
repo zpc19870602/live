@@ -9,7 +9,7 @@
 "图片":"data-original=\"&&\"",
 "标题":"title=\"&&\"",
 "副标题":"<div class=\"duration\">&&</div>",
-"链接":"href=\"/zb/?ju={cateId}/live/{channel_id}/{stream_encoded}&player={player_type}.html\"",
+"链接":"href=\"/zb/&&.html\"",
 "链接前缀":"https://www.ttszb9.com/",
 "链接后缀":".html",
 "搜索链接前缀":"https://www.ttszb9.com",
@@ -22,7 +22,7 @@
 "免嗅": "0",
 "播放前缀": "",
 "播放后缀": "",
-"播放特征": "\\.m3u8|\\.flv|\\.m3u8",
+"播放特征": "\\.m3u8|\\.flv|\\.mp4",
 "超时": 15,
 "筛选":{
 "xxj/zb/kwy":[
