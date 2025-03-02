@@ -9,7 +9,7 @@
 "图片":"data-original=\"&&\"",
 "标题":"title=\"&&\"",
 "副标题":"<div class=\"duration\">&&</div>",
-"链接":"href=\"/&&.html\"",
+"链接":"href=\"/zb/?ju={cateId}/live/{channel_id}/{stream_encoded}&player={player_type}.html\"",
 "链接前缀":"https://www.ttszb9.com/",
 "链接后缀":".html",
 "搜索链接前缀":"https://www.ttszb9.com",
@@ -17,6 +17,23 @@
 "简介":"<p>&&</p>",
 "分类url":"https://www.ttszb9.com/?vip={cateId}/zb/{class}.html",
 "免嗅":"0",
+    "播放器配置": {
+        "默认播放器": "ExoPlayer",
+        "ExoPlayer": {
+            "解码器": "硬解码",
+            "渲染器": "SurfaceView",
+            "动态缓冲": "true",
+            "DRM支持": "false",
+            "自定义UA": "Mozilla/5.0 (ExoPlayer)"
+        },
+        "IjkPlayer": {
+            "解码器": "ffmpeg",
+            "硬件加速": "1",
+            "opensles": "0",
+            "overlay_format": "fcc-_es2",
+            "ffmpeg_options": "auto_rotate=1:enable_accurate_seek=1"
+        }
+    },
 "请求头": {
         "Referer": "https://www.ttszb9.com/",
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
