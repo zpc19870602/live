@@ -28,13 +28,23 @@
     "Sec-Fetch-Mode": "cors",
     "Sec-Fetch-Site": "cross-site"
   },
-  "嗅探": {
-    "类型": "正则",
-    "规则": "(https?:\\/\\/media-hls\\.doppiocdn\\.com\\/b-hls-.*?\\.(m3u8|mp4))"
+    "优先级": {
+      "m3u8": 1,  // 优先使用HLS流
+      "mp4": 2
+    }
   },
-  "播放协议": "hls",
+  "播放协议": "auto",  // 自动根据扩展名选择协议
   "动态参数": {
-    "_t": "{timestamp}"
+    "timestamp": "{timestamp}",
+    "random": "{random(10000,99999)}"
+  },
+  "HLS参数": {  // HLS专属优化
+    "并发下载数": 4,
+    "预加载分片": 3
+  },
+  "MP4参数": {  // MP4专属优化
+    "Range头支持": "bytes=0-",
+    "预缓冲大小": "512KB"
   },
 "筛选":{
 "xxj/zb/kwy":[
