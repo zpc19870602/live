@@ -20,7 +20,7 @@
   "请求头": {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.5359.125 Safari/537.36",
     "Referer": "https://www.ttszb9.com/",
-    "Origin": "https://papapy.vip",  // 关键修改：匹配CDN校验的Origin
+    "Origin": "https://papapy.vip",
     "Sec-CH-UA": "\"Not-A.Brand\";v=\"24\", \"Chromium\";v=\"14\"",
     "Sec-CH-UA-Mobile": "?0",
     "Sec-CH-UA-Platform": "\"Windows\"",
@@ -30,12 +30,12 @@
   },
   "嗅探": {
     "类型": "正则",
-    "规则": "(https?:\\/\\/media-hls\\.doppiocdn\\.com\\/b-hls-.*?\\.(m3u8|mp4))"  // 精准匹配CDN路径
+    "规则": "(https?:\\/\\/media-hls\\.doppiocdn\\.com\\/b-hls-.*?\\.(m3u8|mp4))"
   },
   "播放协议": "hls",
   "动态参数": {
     "_t": "{timestamp}"
-  }
+  },
 "筛选":{
 "xxj/zb/kwy":[
 {
