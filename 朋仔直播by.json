@@ -63,22 +63,5 @@
             "自动重试": 3,
             "降级策略": "mp4"
         }
-    },
-    "备选线路": [
-        {
-            "名称": "香港CDN",
-            "域名": "https://hkcdn.7kkuu.vip/",
-            "权重": 100
-        },
-        {
-            "名称": "美国镜像",
-            "域名": "https://us-mirror.papapy.vip/",
-            "权重": 80
-        }
-    ],
-    "高级配置": {
-        "DNS预解析": ["//7kkuu.vip","//hkcdn.7kkuu.vip"],
-        "TCP快速打开": true,
-        "QUIC协议支持": false
     }
 }
