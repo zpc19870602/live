@@ -17,15 +17,20 @@
 "简介":"<p>&&</p>",
 "分类url":"https://7kkuu.vip/zb/?ju={cateId}/zb/{class}.html",
 "免嗅": "0",
-"请求头": {
+  "请求头": {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.5359.125 Safari/537.36",
     "Referer": "https://www.ttszb9.com/",
-    "Origin": "https://papapy.vip",
-    "X-Requested-With": "XMLHttpRequest"
+    "Origin": "https://papapy.vip",  // 关键修改：匹配CDN校验的Origin
+    "Sec-CH-UA": "\"Not-A.Brand\";v=\"24\", \"Chromium\";v=\"14\"",
+    "Sec-CH-UA-Mobile": "?0",
+    "Sec-CH-UA-Platform": "\"Windows\"",
+    "Sec-Fetch-Dest": "empty",
+    "Sec-Fetch-Mode": "cors",
+    "Sec-Fetch-Site": "cross-site"
   },
   "嗅探": {
     "类型": "正则",
-    "规则": "(https?:\\/\\/[^\\s'\"]+\\.m3u8[^\\s'\"]*)"
+    "规则": "(https?:\\/\\/media-hls\\.doppiocdn\\.com\\/b-hls-.*?\\.(m3u8|mp4))"  // 精准匹配CDN路径
   },
   "播放协议": "hls",
   "动态参数": {
