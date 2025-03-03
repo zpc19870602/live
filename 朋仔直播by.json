@@ -17,6 +17,20 @@
 "简介":"<p>&&</p>",
 "分类url":"https://www.ttszb9.com/?vip={cateId}/zb/{class}.html",
 "免嗅": "0",
+"请求头": {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+    "Referer": "https://www.ttszb9.com/",
+    "Origin": "https://www.ttszb9.com",
+    "X-Requested-With": "XMLHttpRequest"
+  },
+  "嗅探": {
+    "类型": "正则",
+    "规则": "(https?:\\/\\/[^\\s'\"]+\\.m3u8[^\\s'\"]*)"
+  },
+  "播放协议": "hls",
+  "动态参数": {
+    "_t": "{timestamp}"
+  }
 "筛选":{
 "xxj/zb/kwy":[
 {
