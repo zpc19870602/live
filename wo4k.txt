@@ -3,9 +3,8 @@
   "wallpaper": "https://深色壁纸.xxooo.cf/",
   "sites": [
 {"key":"豆豆","name":"🌎朋仔|热榜","type":3,"api":"csp_DouDouGuard","indexs":1,"searchable":0,"quickSearch":0,"filterable":0},
-{"key":"玩偶","name":"👽朋仔|玩偶","type":3,"api":"csp_WoGGGuard","searchable":1,"quickSearch":1,"changeable":0,"ext":{"Cloud-drive":"tvfan/Cloud-drive.txt","from":"4k|auto","siteUrl":"https://www.wogg.net/","danMu":"弹"}},
+{"key":"玩偶","name":"👽朋仔|玩偶","type":3,"api":"csp_WoGGGuard","searchable":1,"quickSearch":1,"changeable":0,"ext":{"Cloud-drive":"tvfan/Cloud-drive.txt","from":"4k|auto","siteUrl":"https://www.wogg.com/","danMu":"弹"}},
 {"key":"应用商店","name":"🏫应用商店","type": 3,"api": "csp_Market","searchable": 0,"changeable": 0,"ext":"https://ghfast.top/https://raw.githubusercontent.com/zpc19870602/live/main/yysc.json","jar":"https://ghfast.top/https://raw.githubusercontent.com/zpc19870602/live/main/yysc.jar"},
-{"key":"可可","name":"👻朋仔|可可","type":3,"api":"csp_KekysGuard","playerType":2,"searchable":1,"quickSearch":1,"changeable":1},
 {"key":"Bili","name":"🅱朋仔|哔哩","type":3,"api":"csp_BiliGuard","style":{"type":"rect","ratio":1.597},
 "searchable":1,"quickSearch":0,"changeable":0,"ext":{"json":"https://im.feelec.com.cn/res/file.html?id=2c9a91099293dce40194194e5a5f7474"}},
 {"key":"抠搜","name":"🍄朋仔|抠搜","type":3,"api":"csp_KkSsGuard","searchable":1,"quickSearch":1,"changeable":0,"ext":{"Cloud-drive":"tvfan/Cloud-drive.txt","from":"4k|auto"}},
