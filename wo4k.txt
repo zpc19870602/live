@@ -63,7 +63,7 @@
 //{"key":"♥️朋仔|直播(备用)","name": "❤朋仔|直播(备用)","type": 3,"api": "csp_xBPQ","searchable": 1,"quickSearch": 1,"filterable": 0,"ext": "https://ghfast.top/https://raw.githubusercontent.com/zpc19870602/live/main/朋仔直播by.json","jar":"https://ghfast.top/https://raw.githubusercontent.com/zpc19870602/live/main/Yoursmile2.jar"},
 //{"key":"♥️朋仔|国产","name":"❤朋仔|国产","type":1,"api":"http://gcmd.cc/api.php/provide/vod/","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://ghfast.top/https://raw.githubusercontent.com/zpc19870602/live/main/xbpq新版.jar"},
 {"key":"♥️朋仔|肉肉","name":"❤朋仔|肉肉","type":1,"api":"http://mdvlog88.com/api.php/provide/vod/","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://ghfast.top/https://raw.githubusercontent.com/zpc19870602/live/main/xbpq新版.jar"},
-{"key":"♥️朋仔|映画","name":"❤朋仔|映画","type":1,"api":"http://www.9191md.me/api.php/provide/vod/","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://ghfast.top/https://raw.githubusercontent.com/zpc19870602/live/main/xbpq新版.jar"}
+{"key":"♥️朋仔|映画","name":"❤朋仔|映画","type":1,"api":"http://www.md91.cc/api.php/provide/vod/","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://ghfast.top/https://raw.githubusercontent.com/zpc19870602/live/main/xbpq新版.jar"}
 ],
 "lives":[
 {"name":"牛播一（仅新版影视仓/ok影视）","type":0,"url":"http://127.0.0.1:9978/proxy?do=饭太硬&type=liveList","playerType":1,"epg":"http://epg.51zmt.top:8000/api/diyp/?ch={name}&date={date}","logo":"https://epg.v1.mk/logo/{name}.png"},
