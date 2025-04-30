@@ -3,7 +3,7 @@
 "storeHouse":
 [
 
-{"sourceName":"朋仔✈️专线","sourceUrl":"https://hub.gitmirror.com/https://raw.githubusercontent.com/zpc19870602/live/main/dwzx.txt"}
+{"sourceName":"朋仔✈️专线","sourceUrl":"https://gh-proxy.com/raw.githubusercontent.com/zpc19870602/live/main/dwzx.txt"}
 
 ]
 }
