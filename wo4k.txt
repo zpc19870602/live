@@ -62,8 +62,8 @@
 //{"key":"♥️朋仔|直播","name": "❤朋仔|直播","type": 3,"api":"csp_xBPQ","searchable": 1,"quickSearch": 1,"filterable": 0,"ext": "https://gh-proxy.com/raw.githubusercontent.com/zpc19870602/live/main/朋仔直播.json","jar":"https://gh-proxy.com/raw.githubusercontent.com/zpc19870602/live/main/Yoursmile2.jar"},
 //{"key":"♥️朋仔|直播(备用)","name": "❤朋仔|直播(备用)","type": 3,"api": "csp_xBPQ","searchable": 1,"quickSearch": 1,"filterable": 0,"ext": "https://gh-proxy.com/raw.githubusercontent.com/zpc19870602/live/main/朋仔直播by.json","jar":"https://gh-proxy.com/raw.githubusercontent.com/zpc19870602/live/main/Yoursmile2.jar"},
 //{"key":"♥️朋仔|国产","name":"❤朋仔|国产","type":1,"api":"http://gcmd.cc/api.php/provide/vod/","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://gh-proxy.com/raw.githubusercontent.com/zpc19870602/live/main/xbpq新版.jar"},
-{"key":"♥️朋仔|肉肉","name":"❤朋仔|肉肉","type":1,"api":"http://mdvlog88.com/api.php/provide/vod/","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://gh-proxy.com/raw.githubusercontent.com/zpc19870602/live/main/xbpq新版.jar"},
-{"key":"♥️朋仔|映画","name":"❤朋仔|映画","type":1,"api":"http://19q.cc/api.php/provide/vod/","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://gh-proxy.com/raw.githubusercontent.com/zpc19870602/live/main/xbpq新版.jar"}
+//{"key":"♥️朋仔|肉肉","name":"❤朋仔|肉肉","type":1,"api":"http://mdvlog88.com/api.php/provide/vod/","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://gh-proxy.com/raw.githubusercontent.com/zpc19870602/live/main/xbpq新版.jar"},
+{"key":"♥️朋仔|映画","name":"❤朋仔|映画","type":1,"api":"http://mdapp5.com/api.php/provide/vod/","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://gh-proxy.com/raw.githubusercontent.com/zpc19870602/live/main/xbpq新版.jar"}
 ],
 "lives":[
 {"name":"V6范明明（需开启V6网络）","type":0,"url":"https://scrm-community.oss-cn-shenzhen.aliyuncs.com/miniso-vendor/20250425-868403-298462cec53c48439a5765ceaca3c67f.m3u","playerType":2},
