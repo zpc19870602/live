@@ -58,7 +58,9 @@
 {"key":"高中教育","name":"📚朋仔┃高中","type":3,"api":"csp_BiliGuard","style":{"type":"rect","ratio":1.597},
 "searchable":0,"quickSearch":0,"changeable":0,"ext":{"json":"https://scrm-community.oss-cn-shenzhen.aliyuncs.com/miniso-vendor/20250818-691234-03d78c46fc2f458d81b895121c27d088.json"}},
 {"key":"♥️朋仔|爱豆","name":"❤朋仔|爱豆","type":1,"api":"https://aidou.la/api.php/provide/vod/","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://gh-proxy.com/raw.githubusercontent.com/zpc19870602/live/main/xbpq新版.jar"},
-{"key":"♥️朋仔|映画","name":"❤朋仔|映画","type":1,"api":"https://md91.cc/api.php/provide/vod/","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://gh-proxy.com/raw.githubusercontent.com/zpc19870602/live/main/xbpq新版.jar"}
+{"key":"♥️朋仔|国产","name":"❤朋仔|国产","type":1,"api":"https://gcmd.cc/api.php/provide/vod/","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://gh-proxy.com/raw.githubusercontent.com/zpc19870602/live/main/xbpq新版.jar"},
+{"key":"♥️朋仔|映画1","name":"❤朋仔|映画1","type":1,"api":"https://md91.cc/api.php/provide/vod/","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://gh-proxy.com/raw.githubusercontent.com/zpc19870602/live/main/xbpq新版.jar"},
+{"key":"♥️朋仔|映画2","name":"❤朋仔|映画2","type":1,"api":"https://19q.cc/api.php/provide/vod/","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://gh-proxy.com/raw.githubusercontent.com/zpc19870602/live/main/xbpq新版.jar"}
 ],
 
 "lives":[
