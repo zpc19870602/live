@@ -1,6 +1,6 @@
 
 {
-"spider":"https://gh-proxy.com/raw.githubusercontent.com/zpc19870602/live/main/fan.txt",
+"spider":"https://hk.gh-proxy.org/raw.githubusercontent.com/zpc19870602/live/main/fan.txt",
 "wallpaper":"https://深色壁纸.xxooo.cf/",
 "sites":[
 {"key":"豆","name":"🌎朋仔|热榜","type":3,"api":"csp_DouDouGuard","indexs":1,"searchable":0,"quickSearch":0,"changeable":0},
@@ -49,7 +49,7 @@
 "searchable":1,"quickSearch":0,"changeable":0,"ext":{"json":"https://scrm-community.oss-cn-shenzhen.aliyuncs.com/miniso-vendor/20250818-438811-ee1bf539a68c4aa696de6280903c8a9a.json"}},
 {"key":"Biliych","name":"🅱朋仔┃演唱会","type":3,"api":"csp_BiliGuard","style":{"type":"rect","ratio":1.597},
 "searchable":1,"quickSearch":0,"changeable":0,"ext":{"json":"https://scrm-community.oss-cn-shenzhen.aliyuncs.com/miniso-vendor/20250818-343950-58e67f4fabd947228c2fc158489008c9.json"}},
-{"key":"dr_兔小贝","name":"📚朋仔┃启蒙","type":3,"api":"https://gh-proxy.net/https://raw.githubusercontent.com/fantaiying7/EXT/refs/heads/main/drpy2.min.js","ext":"https://gh-proxy.net/https://raw.githubusercontent.com/fantaiying7/EXT/refs/heads/main/%E5%85%94%E5%B0%8F%E8%B4%9D.js","style":{"type":"rect","ratio":1.597},
+{"key":"dr_兔小贝","name":"📚朋仔┃启蒙","type":3,"api":"https://hk.gh-proxy.org/https://raw.githubusercontent.com/fantaiying7/EXT/refs/heads/main/drpy2.min.js","ext":"https://hk.gh-proxy.org/https://raw.githubusercontent.com/fantaiying7/EXT/refs/heads/main/%E5%85%94%E5%B0%8F%E8%B4%9D.js","style":{"type":"rect","ratio":1.597},
 "searchable":0,"quickSearch":0,"changeable":0},
 {"key":"少儿教育","name":"📚朋仔┃幼儿","type":3,"api":"csp_BiliGuard","style":{"type":"rect","ratio":1.597},
 "searchable":0,"quickSearch":0,"changeable":0,"ext":{"json":"https://scrm-community.oss-cn-shenzhen.aliyuncs.com/miniso-vendor/20250818-675236-05edd84dd04d48f0b394a11d0a6098f6.json"}},
@@ -59,10 +59,10 @@
 "searchable":0,"quickSearch":0,"changeable":0,"ext":{"json":"https://scrm-community.oss-cn-shenzhen.aliyuncs.com/miniso-vendor/20250818-368432-c7a7bcfa51154bf9bdb98888d3f26000.json"}},
 {"key":"高中教育","name":"📚朋仔┃高中","type":3,"api":"csp_BiliGuard","style":{"type":"rect","ratio":1.597},
 "searchable":0,"quickSearch":0,"changeable":0,"ext":{"json":"https://scrm-community.oss-cn-shenzhen.aliyuncs.com/miniso-vendor/20250818-691234-03d78c46fc2f458d81b895121c27d088.json"}},
-{"key":"♥️朋仔|爱豆","name":"❤朋仔|爱豆","type":1,"api":"https://mdav.pw/api.php/provide/vod/","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://gh-proxy.com/raw.githubusercontent.com/zpc19870602/live/main/xbpq新版.jar"},
-{"key":"♥️朋仔|国产","name":"❤朋仔|国产","type":1,"api":"http://gcmd.cc/api.php/provide/vod/","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://gh-proxy.com/raw.githubusercontent.com/zpc19870602/live/main/xbpq新版.jar"},
-{"key":"♥️朋仔|映画1","name":"❤朋仔|映画1","type":1,"api":"https://md91.cc/api.php/provide/vod/","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://gh-proxy.com/raw.githubusercontent.com/zpc19870602/live/main/xbpq新版.jar"},
-{"key":"♥️朋仔|映画2","name":"❤朋仔|映画2","type":1,"api":"https://19q.cc/api.php/provide/vod/","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://gh-proxy.com/raw.githubusercontent.com/zpc19870602/live/main/xbpq新版.jar"}
+{"key":"♥️朋仔|爱豆","name":"❤朋仔|爱豆","type":1,"api":"https://mdav.pw/api.php/provide/vod/","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://hk.gh-proxy.org/raw.githubusercontent.com/zpc19870602/live/main/xbpq新版.jar"},
+{"key":"♥️朋仔|国产","name":"❤朋仔|国产","type":1,"api":"http://gcmd.cc/api.php/provide/vod/","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://hk.gh-proxy.org/raw.githubusercontent.com/zpc19870602/live/main/xbpq新版.jar"},
+{"key":"♥️朋仔|映画1","name":"❤朋仔|映画1","type":1,"api":"https://md91.cc/api.php/provide/vod/","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://hk.gh-proxy.org/raw.githubusercontent.com/zpc19870602/live/main/xbpq新版.jar"},
+{"key":"♥️朋仔|映画2","name":"❤朋仔|映画2","type":1,"api":"https://19q.cc/api.php/provide/vod/","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://hk.gh-proxy.org/raw.githubusercontent.com/zpc19870602/live/main/xbpq新版.jar"}
 ],
 
 "lives":[
