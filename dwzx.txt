@@ -1,4 +1,4 @@
 {
     "urls": [
-{"url": "https://hk.gh-proxy.org/raw.githubusercontent.com/zpc19870602/live/main/wo4k.txt","name": "⚜️朋仔|专线"}
+{"url": "https://gh-proxy.org/raw.githubusercontent.com/zpc19870602/live/main/wo4k.txt","name": "⚜️朋仔|专线"}
 ]}
