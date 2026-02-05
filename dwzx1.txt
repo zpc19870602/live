@@ -1,5 +1,12 @@
 {
     "urls": [
-{"url": "https://gh-proxy.org/raw.githubusercontent.com/zpc19870602/live/main/wo4k.txt","name": "⚜️朋仔|专线1"},
-{"url": "https://gh-proxy.org/raw.githubusercontent.com/zpc19870602/live/main/niuer.txt","name": "⚜️朋仔|专线2"}
+{"url": "https://gh-proxy.org/raw.githubusercontent.com/zpc19870602/live/main/wo4k.txt","name": "⚜️朋仔|专线"},
+{"url": "https://9280.kstore.vip/newwex.json","name": "⚜️牛二新接口"},
+{"url": "http://tvbox.王二小放牛娃.top","name": "⚜️牛二接口"},
+{"url": "https://www.xn--sss604efuw.com/tv/","name": "⚜️饭太硬"},
+{"url": "http://ok321.top/tv","name": "⚜️OK吊炸天"},
+{"url": "https://jihulab.com/ygbh1/box/-/raw/main/月光宝盒","name": "⚜️月光宝盒"},
+{"url": "https://xn--ohq2r131dtvv.v.nxog.top/apib.php?id=13","name": "⚜️短剧线路"},
+{"url": "https://xn--ohq2r131dtvv.v.nxog.top/apib.php?id=10","name": "⚜️摸鱼线路"},
+{"url": "http://cdn.qiaoji8.com/tvbox.json","name": "⚜️巧挤接口"}
 ]}
