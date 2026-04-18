@@ -1,96 +1,96 @@
-import { Crypto, load, _ } from '../../cat.js';
 /**
- * 直播源（修正版）
- * 适配平台数组结构：每个平台为一个分类，点击后直接进入播放详情
+ * 直播源 - 独立健壮版
+ * 适配 { "pingtai": [...] } 结构
  */
 
 let siteUrl = 'http://api.hclyz.com:81/mf/';
-let siteKey = '';
-let siteType = 0;
-let platformList = [];      // 存储平台数组
+let platformList = [];
 
-async function request(reqUrl, postData, post) {
-    let res = await req(reqUrl, {
-        method: post ? 'post' : 'get',
-        data: postData || {},
-        postType: post ? 'form' : '',
-    });
-    return res.content;
+// 通用请求方法（适配影视仓环境）
+async function request(url) {
+    // 尝试使用全局 req（影视仓标准）
+    if (typeof req !== 'undefined') {
+        let resp = await req(url, { method: 'get' });
+        return resp.content;
+    }
+    // 降级使用 fetch（如果存在）
+    if (typeof fetch !== 'undefined') {
+        let resp = await fetch(url);
+        return await resp.text();
+    }
+    throw new Error('No available request method (req/fetch)');
 }
 
 async function init(cfg) {
-    siteKey = cfg.skey;
-    siteType = cfg.stype;
-    if (cfg.ext) {
-        siteUrl = cfg.ext;
+    try {
+        if (cfg.ext) siteUrl = cfg.ext;
+        console.log('[sebo] init, siteUrl=', siteUrl);
+        
+        const jsonTxt = await request(siteUrl + 'json.txt');
+        console.log('[sebo] json.txt length=', jsonTxt.length);
+        
+        const data = JSON.parse(jsonTxt);
+        platformList = data.pingtai || [];
+        console.log('[sebo] 平台数量=', platformList.length);
+    } catch (e) {
+        console.log('[sebo] init error:', e.message);
+        platformList = [];
     }
-    const jsonTxt = await request(siteUrl + 'json.txt');
-    const data = JSON.parse(jsonTxt);
-    // 原始数据是 { "pingtai": [...] } 结构
-    platformList = data.pingtai || [];
 }
 
 async function home(filter) {
-    // 将所有平台归为一个分类（也可按需拆分为多个分类，但通常直播源列表直接展示即可）
-    const classes = [{
-        type_id: 'all',
-        type_name: '全部平台'
-    }];
-    return JSON.stringify({ class: classes });
+    // 返回一个分类，名为“全部平台”
+    return JSON.stringify({
+        class: [{ type_id: 'all', type_name: '全部平台' }]
+    });
 }
 
 async function category(tid, pg, filter, ext) {
-    // 不分页，直接返回所有平台作为视频列表
-    const videos = platformList.map(item => {
-        return {
-            vod_id: item.address,          // 详情文件的地址，如 jsonweishizhibo.txt
+    try {
+        const videos = platformList.map(item => ({
+            vod_id: item.address,
             vod_name: item.title,
             vod_pic: item.xinimg,
-            vod_remarks: item.Number       // 显示视频数量或直播状态
-        };
-    });
-    return JSON.stringify({
-        list: videos,
-        page: pg,
-        pagecount: 1,
-        total: videos.length
-    });
+            vod_remarks: String(item.Number) + '个频道'
+        }));
+        console.log('[sebo] category 返回数量=', videos.length);
+        return JSON.stringify({
+            list: videos,
+            page: 1,
+            pagecount: 1,
+            total: videos.length
+        });
+    } catch (e) {
+        console.log('[sebo] category error:', e);
+        return JSON.stringify({ list: [], page: 1, pagecount: 1, total: 0 });
+    }
 }
 
 async function detail(id) {
     try {
         const detailUrl = siteUrl + id;
-        const resText = await request(detailUrl);
-        const resJson = JSON.parse(resText);
-        const zhuboList = resJson.zhubo || [];
-        const playUrls = zhuboList.map(vod => {
-            return vod.title + '$' + vod.address;
-        }).join('#');
-        const video = {
-            vod_play_from: '直播源',
-            vod_play_url: playUrls,
-            vod_content: '请选择播放线路'
-        };
-        return JSON.stringify({ list: [video] });
+        console.log('[sebo] 请求详情:', detailUrl);
+        const text = await request(detailUrl);
+        const data = JSON.parse(text);
+        const zhuboList = data.zhubo || [];
+        const playUrls = zhuboList.map(v => v.title + '$' + v.address).join('#');
+        return JSON.stringify({
+            list: [{
+                vod_play_from: '直播线路',
+                vod_play_url: playUrls,
+                vod_content: '共 ' + zhuboList.length + ' 条线路'
+            }]
+        });
     } catch (e) {
-        console.log('detail error', e);
-        return null;
+        console.log('[sebo] detail error:', e);
+        return JSON.stringify({ list: [] });
     }
 }
 
 async function play(flag, id, flags) {
-    return JSON.stringify({
-        parse: 0,
-        url: id,
-    });
+    return JSON.stringify({ parse: 0, url: id });
 }
 
 export function __jsEvalReturn() {
-    return {
-        init: init,
-        home: home,
-        category: category,
-        detail: detail,
-        play: play,
-    };
+    return { init, home, category, detail, play };
 }
