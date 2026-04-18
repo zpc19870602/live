@@ -1,4 +1,4 @@
-import { Crypto, load, _ } from '../../cat.js';
+import { Crypto, load, _ } from 'https://hk.gh-proxy.org/raw.githubusercontent.com/zpc19870602/live/main/cat.js';
 /**
  * 直播源
  * author：Leospring
