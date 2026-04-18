@@ -622,7 +622,7 @@
                 "json": "https://nos.netease.com/ysf/c66a4b5356141c49fd45ec51568017b4.txt"
             }
         },
-{"key":"♥️朋仔|色播","name":"❤朋仔|色播","type":3,"api":"https://hk.gh-proxy.org/raw.githubusercontent.com/zpc19870602/live/main/sebo.js","searchable":1,"changeable":0,"jar":"https://gh-proxy.org//raw.githubusercontent.com/zpc19870602/live/main/182.jar"},
+{"key":"♥️朋仔|色播","name":"❤朋仔|色播","type":3,"api":"https://hk.gh-proxy.org/raw.githubusercontent.com/zpc19870602/live/main/sebo1.js","searchable":1,"changeable":0,"ext": "http://api.hclyz.com:81/mf/"},
 {"key":"♥️朋仔|爱豆","name":"❤朋仔|爱豆","type":1,"api":"https://mdav.pw/api.php/provide/vod/","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://hk.gh-proxy.org/raw.githubusercontent.com/zpc19870602/live/main/xbpq新版.jar"},
 {"key":"♥️朋仔|映画1","name":"❤朋仔|映画1","type":1,"api":"https://md91.cc/api.php/provide/vod/","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://hk.gh-proxy.org/raw.githubusercontent.com/zpc19870602/live/main/xbpq新版.jar"}
     ],
