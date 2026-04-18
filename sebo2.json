@@ -1,21 +1,27 @@
 {
-  "站名": "Leospring直播源",
-  "类型": 2,
-  "直接播放": 1,
-  "分类url": "http://api.hclyz.com:81/mf/json.txt",
-  "列表url": "http://api.hclyz.com:81/mf/{vid}.json",
-  "详情url": "http://api.hclyz.com:81/mf/{vid}.json",
-  "分类": "分类json",
-  "分类id": "key",
-  "分类名": "key",
-  "列表": "zhubo",
-  "列表图片": "xinimg",
-  "列表名": "title",
-  "列表链接": "address",
-  "详情": "zhubo",
-  "播放链接": "address",
-  "播放标题": "title",
-  "图片代理": "https://github.moeyy.xyz/https://raw.githubusercontent.com/fish2018/lib/refs/heads/main/imgs/",
-  "替换图片": "http://cdn.gcufbd.top/img/",
-  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.5359.125 Safari/537.36"
+  "spider": "https://gh.clun.top/raw.githubusercontent.com/fish2018/lib/refs/heads/main/js/dr_py/js/sebo.js",
+  "站点": {
+    "key": "sebo_JSON",
+    "name": "sebo直播源(JSON)",
+    "type": 2,
+    "api": "csp_Leospring",
+    "searchable": 0,
+    "quickSearch": 0,
+    "filterable": 0,
+    "ext": "http://api.hclyz.com:81/mf/"
+  },
+  "规则": {
+    "分类url": "http://api.hclyz.com:81/mf/json.txt",
+    "列表url": "http://api.hclyz.com:81/mf/{vid}.json",
+    "分类": "json",
+    "分类id": "key",
+    "分类名": "key",
+    "列表": "zhubo",
+    "列表名": "title",
+    "列表链接": "address",
+    "列表图片": "xinimg",
+    "详情": "zhubo",
+    "播放标题": "title",
+    "播放链接": "address"
+  }
 }
