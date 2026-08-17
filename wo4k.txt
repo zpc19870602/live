@@ -488,7 +488,9 @@
         },
 {"key":"♥️朋仔|色播","name":"❤朋仔|色播","type":1,"api":"https://hk.gh-proxy.org/raw.githubusercontent.com/zpc19870602/live/main/sebo1.js","searchable":1,"changeable":0,"ext": "http://api.hclyz.com:81/mf/"},
 {"key":"♥️朋仔|爱豆","name":"❤朋仔|爱豆","type":1,"api":"https://mdav.pw/api.php/provide/vod/","searchable":1,"quickSearch":1,"filterable":1},
-{"key":"♥️朋仔|映画1","name":"❤朋仔|映画1","type":1,"api":"https://md91.cc/api.php/provide/vod/","searchable":1,"quickSearch":1,"filterable":1}
+{"key":"♥️朋仔|映画1","name":"❤朋仔|映画1","type":1,"api":"https://md91.cc/api.php/provide/vod/","searchable":1,"quickSearch":1,"filterable":1},
+{"key": "黄豆短剧APP","name": "成人短剧","type": 3,"searchable": 1,"quickSearch": 1,"changeable": 1,"api": "https://gitlab.com/lemon52030/BOX/-/raw/main/py_vod/黄豆短剧APP.py","jar":"https://gitlab.com/lemon52030/BOX/-/raw/main/jar/auwo.jar"},
+{"key": "hgds","name": "🔆黄果短剧","type": 3,"searchable": 1,"quickSearch": 1,"changeable": 1,"api": "https://8263.kstore.space/hgds.py","jar":"https://gitlab.com/lemon52030/BOX/-/raw/main/jar/auwo.jar"}
     ],
     "rules": [
         {
@@ -516,6 +518,15 @@
             "name": "Kimentanm",
             "type": 0,
             "url": "https://gh.927223.xyz/https://raw.githubusercontent.com/Kimentanm/aptv/master/m3u/iptv.m3u",
+            "playerType": 2
+        },
+        {
+            "name": "天涯直播",
+            "type": 0,
+            "url": "https://d.kstore.dev/download/17425/%E5%A4%A9%E6%B6%AF%E7%9B%B4%E6%92%AD.txt",
+            "ua": "okhttp/3.12.13",
+            "epg": "http://epg.112114.xyz/?ch={name}&date={date}",
+            "logo": "https://epg.112114.xyz/logo/{name}.png",
             "playerType": 2
         },
         {
