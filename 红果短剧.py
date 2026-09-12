@@ -3196,12 +3196,20 @@ class Spider(Spider):
     def homeVideoContent(self):
         return {"list": []}
 
-    def _query(self, pg, q=None):
+    def _query(self, pg, q=None, path="/category/real-drama"):
         try: pg = max(1, int(pg))
         except (TypeError, ValueError): pg = 1
         if q is None:
             q = {"tab": "1", "sort_type": "1"}
-        p = (_data(SITE + "/category?" + urlencode(q)).get("loaderData") or {}).get("category_page") or {}
+        # 官网新版分类使用 canonical path；旧的 /category?tab=... 会回退到
+        # 真人短剧并忽略筛选参数，导致其它分类拿到错误/空列表。只把页码
+        # 放到 canonical path，其余旧参数由服务端路由默认值处理。
+        params = {"page": str(pg)} if pg > 1 else {}
+        url = SITE + path + (("?" + urlencode(params)) if params else "")
+        # 官网新版将分类路由键从 ``category_page`` 改为 ``category_$``。
+        # 兼容旧版键名，避免分类页解析为空（搜索页仍使用自己的路由键）。
+        loader = _data(url).get("loaderData") or {}
+        p = loader.get("category_$") or loader.get("category_page") or {}
         return p
 
     def categoryContent(self, tid, pg, filter, extend):
@@ -3236,7 +3244,7 @@ class Spider(Spider):
                     q[k] = str(v)
         if page > 1:
             q["page"] = str(page)
-        p = self._query(page, q)
+        p = self._query(page, q, "/category/real-drama")
         rows = p.get("recommendList") or []
         page_data = p.get("pagination") or {}
         return {
