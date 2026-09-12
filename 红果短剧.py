@@ -3,6 +3,7 @@ from __future__ import annotations
 import base64
 import binascii
 import bisect
+import html as _html
 import hashlib
 import json
 import lzma
@@ -3128,6 +3129,86 @@ def _item(x):
 def _cat_item(x):
     return _item(x)
 
+
+# 新版官网已经移除了旧的 ``/category?topic=cate_xxx`` 查询接口，
+# 筛选改成了 canonical slug 路径（例如 /category/real-drama/romance）。
+# 保留旧值是为了兼容已经保存的源配置，在请求前转换为新版路径。
+_LEGACY_CATEGORY_SLUGS = {
+    # 主题
+    "cate_1021": "romance", "cate_1048": "growth", "cate_262": "wonder",
+    "cate_1020": "fantasy", "cate_1019": "fantasy", "cate_439": "costume",
+    "cate_1038": "legend", "cate_246": "costume", "cate_1013": "fantasy",
+    "cate_1047": "drama", "cate_1180": "family", "cate_1022": "romance",
+    "cate_165": "suspense", "cate_303": "comedy", "cate_297": "youth",
+    "cate_1027": "supernatural", "cate_1025": "period", "cate_751": "horror",
+    "cate_1235": "war", "cate_1136": "drama", "cate_1148": "thriller",
+    "cate_504": "war", "cate_1172": "action-adventure", "cate_1240": "legend",
+    "cate_1168": "disaster", "cate_302": "action-adventure", "cate_1092": "sci-fi",
+    "cate_1219": "horror", "cate_1225": "drama",
+    # 背景
+    "cate_757": "romance", "cate_1": "urban", "cate_758": "costume",
+    "cate_11": "family", "cate_79": "period", "cate_452": "fantasy",
+    "cate_127": "drama", "cate_390": "period", "cate_4": "youth",
+    "cate_1153": "costume", "cate_1162": "disaster",
+    # 设定（官网没有逐一对应的旧标签，映射到语义最接近的新版分类）
+    "cate_1051": "wonder", "cate_1207": "clan", "cate_760": "growth",
+    "cate_266": "drama", "cate_36": "comeback", "cate_37": "wonder",
+    "cate_19": "wonder", "cate_265": "romance", "cate_862": "family",
+    "cate_1010": "family", "cate_475": "comeback", "cate_20": "urban",
+    "cate_936": "family", "cate_1045": "comeback", "cate_598": "fantasy",
+    "cate_1008": "romance", "cate_1007": "legend", "cate_487": "drama",
+    "cate_1049": "clan", "cate_1044": "comeback", "cate_96": "romance",
+    "cate_43": "drama", "cate_26": "drama", "cate_387": "youth",
+    "cate_762": "romance", "cate_929": "supernatural", "cate_616": "comeback",
+    "cate_1293": "drama", "cate_477": "romance", "cate_1291": "family",
+    "cate_1287": "urban", "cate_1042": "legend", "cate_428": "cute-kids",
+    "cate_1200": "growth", "cate_1255": "family", "cate_615": "romance",
+    "cate_831": "wonder", "cate_380": "horror", "cate_1191": "urban",
+    "cate_826": "clan", "cate_582": "disaster", "cate_375": "action-adventure",
+}
+
+
+def _category_slug(value: Any) -> str:
+    value = _text(value)
+    if not value or value in ("all", "0"):
+        return ""
+    return _LEGACY_CATEGORY_SLUGS.get(value, value.lower())
+
+
+def _rank_page(url: str) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    """解析榜单页的 data-fn-args。
+
+    榜单的 loaderData.content 在 SSR 路由数据中会被序列化成空对象，
+    真实 rankList 放在同页的 data-fn-args 中，因此不能只读 _ROUTER_DATA。
+    """
+    source = _page(url)
+    pattern = re.compile(
+        r'data-fn-name=["\']r["\'][^>]*data-fn-args=["\']([^"\']+)["\']',
+        re.I,
+    )
+    for match in pattern.finditer(source):
+        try:
+            args = json.loads(_html.unescape(match.group(1)))
+        except (TypeError, ValueError):
+            continue
+        if not isinstance(args, list) or len(args) < 3:
+            continue
+        content = args[2]
+        if isinstance(content, Mapping) and isinstance(content.get("rankList"), list):
+            return content.get("rankList") or [], content.get("pagination") or {}
+    return [], {}
+
+
+def _rank_item(item: Mapping[str, Any]) -> dict[str, Any]:
+    sid = _text(item.get("seriesId") or item.get("id"))
+    return {
+        "vod_id": sid,
+        "vod_name": _text(item.get("title")) or "未命名",
+        "vod_pic": _text(item.get("cover")),
+        "vod_remarks": _text(item.get("scoreText") or item.get("heatText")),
+        "vod_content": _text(item.get("description")),
+    }
+
 def _filter_group(key, name, values):
     return {"key": key, "name": name, "value": [{"n": n, "v": v} for n, v in values]}
 
@@ -3218,34 +3299,81 @@ class Spider(Spider):
         except (TypeError, ValueError):
             page = 1
 
-        # 漫剧 / AI漫剧：官网 tab=2 并不可靠，改为搜索关键词拿列表
+        # 漫剧 / AI漫剧使用官网新版 canonical 分类页。旧版用搜索关键词，
+        # 会把结果混在一起，导致分类看起来完全相同。
         if tid in ("comic", "manju", "漫剧"):
-            return self.searchContent("漫剧", False, str(page))
+            path = "/category/comic-drama"
+            p = self._query(page, path=path)
+            rows = p.get("recommendList") or []
+            page_data = p.get("pagination") or {}
+            return {
+                "page": page,
+                "pagecount": int(page_data.get("totalPages") or 1),
+                "limit": len(rows),
+                "total": int(page_data.get("total") or len(rows)),
+                "list": [_cat_item(x) for x in rows],
+            }
         if tid in ("ai_comic", "ai_manju", "AI漫剧", "ai漫剧"):
-            return self.searchContent("AI漫剧", False, str(page))
+            path = "/category/ai-drama"
+            p = self._query(page, path=path)
+            rows = p.get("recommendList") or []
+            page_data = p.get("pagination") or {}
+            return {
+                "page": page,
+                "pagecount": int(page_data.get("totalPages") or 1),
+                "limit": len(rows),
+                "total": int(page_data.get("total") or len(rows)),
+                "list": [_cat_item(x) for x in rows],
+            }
 
-        q = {"tab": "1", "sort_type": "1"}
-        if tid == "latest":
-            q["sort_type"] = "2"
-        elif tid == "hot":
-            q["sort_type"] = "1"
-        elif tid == "male":
-            q["gender"] = "1"
-        elif tid == "female":
-            q["gender"] = "2"
         if isinstance(extend, str) and extend:
             try:
                 extend = json.loads(extend)
             except Exception:
                 extend = {}
+
+        # “最热”是独立榜单路由，不能再把 sort_type 作为旧 query 传给分类页。
+        if tid == "hot":
+            rows, page_data = _rank_page(
+                SITE + "/rank/hot-real-drama" + (("?page=%d" % page) if page > 1 else "")
+            )
+            return {
+                "page": page,
+                "pagecount": int(page_data.get("totalPages") or 1),
+                "limit": len(rows),
+                "total": int(page_data.get("total") or len(rows)),
+                "list": [_rank_item(x) for x in rows if isinstance(x, Mapping)],
+            }
+
+        # 新版官网没有“最新/男频/女频”的独立页面，旧的 sort_type/gender
+        # query 也已被官网禁用。这里给三个入口绑定到稳定的新版页面：
+        # 默认真人页作为“最新”，男女频用语义最接近且确实存在的主题页，
+        # 至少不会再把所有入口请求成同一个旧 query。
+        # 主题/背景/设定筛选则转换为 canonical 子路径，保证筛选实际生效。
+        path = {
+            "all": "/category/real-drama",
+            "latest": "/category/real-drama",
+            "male": "/category/real-drama/action-adventure",
+            "female": "/category/real-drama/romance",
+        }.get(tid, "/category/real-drama")
+        slug = ""
         if isinstance(extend, dict):
-            for k, v in extend.items():
-                if v and str(v) not in ("", "all", "0"):
-                    q[k] = str(v)
-        if page > 1:
-            q["page"] = str(page)
-        p = self._query(page, q, "/category/real-drama")
+            for value in extend.values():
+                slug = _category_slug(value)
+                if slug:
+                    break
+        if slug:
+            path += "/" + quote(slug, safe="-")
+        p = self._query(page, path=path)
         rows = p.get("recommendList") or []
+        # canonical 分类没有“最新”路由，但 series_id 是按创建时间递增的
+        # 雪花 ID；按其倒序排列可恢复“最新”入口的预期顺序。
+        if tid == "latest":
+            rows = sorted(
+                rows,
+                key=lambda item: _text((item or {}).get("series_id")),
+                reverse=True,
+            )
         page_data = p.get("pagination") or {}
         return {
             "page": page,
