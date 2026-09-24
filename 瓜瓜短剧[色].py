@@ -52,8 +52,98 @@ class Spider(Spider):
             if m and 'loading' not in m.group(1):
                 u = m.group(1)
         return self._abs(u)
+    def _cover_urls(self, html):
+        text = (html or '').replace('\\u002F', '/').replace('\\u0026', '&')
+        urls = re.findall(r'https?://[^"\'\s<>]+?\.(?:jpe?g|png|webp)(?:\?[^"\'\s<>]*)?', text, re.I)
+        out = []
+        seen = set()
+        for url in urls:
+            if url not in seen and '/cover/' in url.lower() and not re.search(r'social-default|logo', url, re.I):
+                seen.add(url)
+                out.append(url)
+        return out
+    def _nuxt_items(self, html):
+        m = re.search(r'<script[^>]+id=["\']__NUXT_DATA__["\'][^>]*>(.*?)</script>', html or '', re.S | re.I)
+        if not m:
+            return []
+        try:
+            table = json.loads(m.group(1))
+            resolving = set()
+            def resolve_entry(index):
+                if index < 0 or index >= len(table):
+                    return index
+                if index in resolving:
+                    return table[index]
+                value = table[index]
+                if not isinstance(value, (dict, list)):
+                    return value
+                resolving.add(index)
+                if isinstance(value, list):
+                    out = [resolve_entry(x) if isinstance(x, int) and not isinstance(x, bool) and 0 <= x < len(table) else x for x in value]
+                else:
+                    out = {k: (resolve_entry(v) if isinstance(v, int) and not isinstance(v, bool) and 0 <= v < len(table) else v) for k, v in value.items()}
+                resolving.remove(index)
+                return out
+            root = resolve_entry(0)
+            def find_items(value, seen=None):
+                if seen is None:
+                    seen = set()
+                if not isinstance(value, (dict, list)) or id(value) in seen:
+                    return []
+                seen.add(id(value))
+                if isinstance(value, dict):
+                    page = value.get('page')
+                    if isinstance(page, dict) and isinstance(page.get('items'), list):
+                        return page.get('items')
+                    for child in value.values():
+                        found = find_items(child, seen)
+                        if found:
+                            return found
+                else:
+                    for child in value:
+                        found = find_items(child, seen)
+                        if found:
+                            return found
+                return []
+            return find_items(root)
+        except Exception:
+            return []
     def _cards(self, html):
         out, seen = [], set()
+        cover_urls = self._cover_urls(html)
+        for data in self._nuxt_items(html):
+            if not isinstance(data, dict):
+                continue
+            vid = data.get('primary_route') or data.get('detail_route') or ''
+            if vid.startswith('/drama/'):
+                vid = vid.replace('/drama/', '/play/', 1) + '/' + str(data.get('latest_episode_number') or 1)
+            elif not vid.startswith('/play/') and data.get('slug'):
+                vid = '/play/' + data.get('slug') + '/' + str(data.get('latest_episode_number') or 1)
+            title = str(data.get('title') or '').strip()
+            if not vid or not title or vid in seen:
+                continue
+            seen.add(vid)
+            cover = data.get('cover') or {}
+            pic = cover.get('url') or cover.get('fallback_url') or (cover_urls[len(out)] if len(out) < len(cover_urls) else '')
+            latest = data.get('latest_episode_number')
+            out.append({"vod_id": self._abs(vid), "vod_name": title, "vod_pic": self._abs(pic), "vod_remarks": ('更新至' + str(latest) + '集') if latest else '', "style": {"type": "rect", "ratio": 0.75}})
+        if out:
+            return out
+        modern_cards = re.findall(r'<article\s+data-xpch=["\']card-drama["\'][^>]*>.*?</article>', html or '', re.S | re.I)
+        if modern_cards:
+            for item in modern_cards:
+                im = re.search(r'<a[^>]+href=["\'](/play/[^"\']+)["\']', item, re.I)
+                nm = re.search(r'<div[^>]+class=["\'][^"\']*truncate[^"\']*["\'][^>]*>(.*?)</div>', item, re.S | re.I)
+                if not im:
+                    continue
+                vid = im.group(1)
+                title = re.sub(r'<[^>]+>', '', nm.group(1) if nm else '').strip()
+                if not title or vid in seen:
+                    continue
+                seen.add(vid)
+                ep = re.search(r'(?:全|更新至)\s*(\d+)\s*集', item, re.I)
+                out.append({"vod_id": self._abs(vid), "vod_name": title, "vod_pic": cover_urls[len(out)] if len(out) < len(cover_urls) else self._pic(item), "vod_remarks": ('更新至' + ep.group(1) + '集') if ep else '', "style": {"type": "rect", "ratio": 0.75}})
+            return out
         for m in re.finditer(r'<div class="card">(.*?)</div>', html, re.S):
             item = m.group(1)
             im = re.search(r'<a class="card-main" href="(/play/[^"]+)"', item)
@@ -79,12 +169,12 @@ class Spider(Spider):
             u1, up = f'{self.site_url}/browse', lambda n: f'{self.site_url}/browse?page={n}'
         elif s.startswith('tag:'):
             t = s[4:]
-            u1, up = f'{self.site_url}/tag/{t}', lambda n: f'{self.site_url}/tag/{t}/page/{n}'
+            u1, up = f'{self.site_url}/tag/{t}', lambda n: f'{self.site_url}/tag/{t}?page={n}'
         elif s == 'search':
             qs = quote(q or '')
             u1, up = f'{self.site_url}/search?q={qs}', lambda n: f'{self.site_url}/search?q={qs}&page={n}'
         else:
-            u1, up = f'{self.site_url}/{s}', lambda n: f'{self.site_url}/{s}/page/{n}'
+            u1, up = f'{self.site_url}/{s}', lambda n: f'{self.site_url}/{s}?page={n}'
         if pg <= 1:
             html = self._get(u1)
             if not html:
@@ -123,14 +213,70 @@ class Spider(Spider):
         if not html:
             return None
         m = re.search(r'window\.HG_PLAY\s*=\s*(.*?);\s*</script>', html, re.S)
+        if m:
+            try:
+                return json.loads(m.group(1).replace('\\u0026', '&'))
+            except Exception:
+                pass
+        m = re.search(r'<script[^>]+id=["\']__NUXT_DATA__["\'][^>]*>(.*?)</script>', html, re.S | re.I)
         if not m:
             return None
         try:
-            return json.loads(m.group(1).replace('\\u0026', '&'))
+            table = json.loads(m.group(1))
+            resolving = set()
+            def resolve_entry(index):
+                if index < 0 or index >= len(table):
+                    return index
+                if index in resolving:
+                    return table[index]
+                value = table[index]
+                if not isinstance(value, (dict, list)):
+                    return value
+                resolving.add(index)
+                if isinstance(value, list):
+                    out = [resolve_entry(x) if isinstance(x, int) and not isinstance(x, bool) and 0 <= x < len(table) else x for x in value]
+                else:
+                    out = {k: (resolve_entry(v) if isinstance(v, int) and not isinstance(v, bool) and 0 <= v < len(table) else v) for k, v in value.items()}
+                resolving.remove(index)
+                return out
+            root = resolve_entry(0)
+            def find_play(value, seen=None):
+                if seen is None:
+                    seen = set()
+                if not isinstance(value, (dict, list)) or id(value) in seen:
+                    return None
+                seen.add(id(value))
+                if isinstance(value, dict):
+                    if value.get('drama') and (value.get('media') or {}).get('source_url'):
+                        return value
+                    for child in value.values():
+                        found = find_play(child, seen)
+                        if found:
+                            return found
+                else:
+                    for child in value:
+                        found = find_play(child, seen)
+                        if found:
+                            return found
+                return None
+            data = find_play(root)
+            if not data:
+                return None
+            drama = data.get('drama') or {}
+            return {
+                'title': drama.get('title') or '',
+                'intro': drama.get('intro') or '',
+                'totalEp': int(drama.get('total_episode_count') or 0),
+                'line': '',
+                'current': data.get('episode') or {},
+                'media': data.get('media') or {},
+                'episodes': data.get('episodes') or []
+            }
         except Exception:
             return None
     def _slug(self, vid):
-        return vid.split('/')[-1].split('?')[0] if '/' in vid else vid
+        m = re.search(r'/(?:play|drama)/([^/?#]+)', str(vid), re.I)
+        return m.group(1) if m else (vid.split('/')[-1].split('?')[0] if '/' in vid else vid)
     def _fetch_all(self, slug, total):
         got = {}
         for n in range(1, min(3, total) + 1):
@@ -163,27 +309,26 @@ class Spider(Spider):
         if not vid:
             return {"list": []}
         slug = self._slug(vid)
-        d = self._hg(f'{self.site_url}/play/{slug}')
+        d = self._hg(f'{self.site_url}/play/{slug}/1')
         title = (d or {}).get('title') or slug
         if not title:
-            html = self._get(f'{self.site_url}/play/{slug}')
+            html = self._get(f'{self.site_url}/drama/{slug}')
             tm = re.search(r'<title>(.*?)\s*[-|]', html or '')
             title = tm.group(1).strip() if tm else slug
         poster = ''
         if d:
             eps0 = (d.get('episodes') or [{}])[0]
-            poster = eps0.get('poster') or ''
+            poster = eps0.get('poster') or (d.get('media') or {}).get('poster_url') or ''
         if not poster:
-            html = self._get(f'{self.site_url}/play/{slug}')
+            html = self._get(f'{self.site_url}/drama/{slug}')
             om = re.search(r'<meta[^>]+property="og:image"[^>]+content="([^"]+)"', html or '')
             if om:
                 poster = om.group(1)
         total = int((d or {}).get('totalEp') or 0)
         urls = []
         if total > 0:
-            got = self._fetch_all(slug, total)
-            for n in sorted(got):
-                urls.append(f'第{n}集${got[n]}')
+            for n in range(1, total + 1):
+                urls.append(f'第{n}集$' + f'{self.site_url}/play/{slug}/{n}')
         vod = {"vod_id": vid, "vod_name": title, "vod_pic": self._abs(poster), "vod_remarks": f'更新至 {total} 集' if total else '', "type_name": (d or {}).get('line') or '', "vod_play_from": "主线路", "vod_play_url": '#'.join(urls)}
         return {"list": [vod]}
     def searchContent(self, key, quick, pg='1'):
@@ -194,6 +339,12 @@ class Spider(Spider):
         return {"list": ls, "page": pg, "pagecount": pc, "limit": self.page_size, "total": len(ls)}
     def playerContent(self, flag, id, vipFlags):
         u = id.split("$")[1] if "$" in id else id
+        m = re.search(r'/play/([^/?#]+)/(\d+)(?:[/?#]|$)', u)
+        if m and '.m3u8' not in u and '.mp4' not in u:
+            d = self._hg(f'{self.site_url}/play/{m.group(1)}/{m.group(2)}')
+            if d:
+                media = d.get('media') or {}
+                u = media.get('source_url') or media.get('mp4_url') or ''
         return {"parse": 0, "url": u, "header": self.headers} if u else {"parse": 1, "url": "", "header": self.headers}
     def localProxy(self, param):
         return None
