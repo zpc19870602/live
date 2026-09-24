@@ -4,8 +4,17 @@ import sys
 import re
 import json
 import math
+import base64
 import requests
 from urllib.parse import quote
+try:
+    from Crypto.Cipher import AES
+except ImportError:
+    AES = None
+try:
+    from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+except ImportError:
+    Cipher = algorithms = modes = None
 sys.path.append('..')
 try:
     from base.spider import Spider
@@ -38,6 +47,48 @@ class Spider(Spider):
         if u.startswith('//'):
             return 'https:' + u
         return u if u.startswith('http') else self.site_url + u
+    def _cover(self, u):
+        """站点封面为 AES-CBC 密文；TVBox 不能直接显示密文，转成 data URL。"""
+        u = self._abs(u)
+        if not u or u.startswith('data:image/'):
+            return u
+        if not AES and not Cipher:
+            return ''
+        try:
+            r = self.sess.get(u, headers=self.headers, timeout=15, verify=False)
+            raw = r.content
+            if len(raw) < 32 or len(raw) % 16:
+                return u if raw.startswith((b'\xff\xd8\xff', b'\x89PNG', b'RIFF', b'GIF')) else ''
+            # 新旧资源并存：部分 poster 已是明文图片，直接保留 URL。
+            if raw.startswith((b'\xff\xd8\xff', b'\x89PNG', b'RIFF', b'GIF')):
+                return u
+            if AES:
+                plain = AES.new(b'f5d965df75336270', AES.MODE_CBC, b'97b60394abc2fbe1').decrypt(raw)
+            else:
+                decryptor = Cipher(algorithms.AES(b'f5d965df75336270'), modes.CBC(b'97b60394abc2fbe1')).decryptor()
+                plain = decryptor.update(raw) + decryptor.finalize()
+            pad = plain[-1]
+            if not isinstance(pad, int):
+                pad = ord(pad)
+            if pad < 1 or pad > 16 or plain[-pad:] != bytes([pad]) * pad:
+                return ''
+            plain = plain[:-pad]
+            if plain[:3] == b'\xff\xd8\xff': mime = 'image/jpeg'
+            elif plain[:8] == b'\x89PNG\r\n\x1a\n': mime = 'image/png'
+            elif plain[:4] == b'RIFF': mime = 'image/webp'
+            elif plain[:3] == b'GIF': mime = 'image/gif'
+            else: return ''
+            return 'data:%s;base64,%s' % (mime, base64.b64encode(plain).decode('ascii'))
+        except Exception:
+            return ''
+
+    def _cover_candidates(self, *values):
+        for value in values:
+            if value:
+                decoded = self._cover(value)
+                if decoded:
+                    return decoded
+        return ''
     def _pic(self, item_html):
         u = ''
         m = re.search(r'data-cover-fb="([^"]+)"', item_html)
@@ -108,6 +159,36 @@ class Spider(Spider):
             return find_items(root)
         except Exception:
             return []
+
+    def _nuxt_drama(self, html, slug):
+        m = re.search(r'<script[^>]+id=["\']__NUXT_DATA__["\'][^>]*>(.*?)</script>', html or '', re.S | re.I)
+        if not m:
+            return {}
+        try:
+            table = json.loads(m.group(1)); resolving = set()
+            def resolve(i):
+                if i < 0 or i >= len(table): return i
+                v = table[i]
+                if not isinstance(v, (dict, list)) or i in resolving: return v
+                resolving.add(i)
+                out = ([resolve(x) if isinstance(x, int) and not isinstance(x, bool) and 0 <= x < len(table) else x for x in v]
+                       if isinstance(v, list) else {k: resolve(x) if isinstance(x, int) and not isinstance(x, bool) and 0 <= x < len(table) else x for k, x in v.items()})
+                resolving.remove(i); return out
+            root = resolve(0)
+            def walk(v):
+                if isinstance(v, dict):
+                    if v.get('slug') == slug and isinstance(v.get('cover'), dict): return v
+                    for x in v.values():
+                        y = walk(x)
+                        if y: return y
+                elif isinstance(v, list):
+                    for x in v:
+                        y = walk(x)
+                        if y: return y
+                return None
+            return walk(root) or {}
+        except Exception:
+            return {}
     def _cards(self, html):
         out, seen = [], set()
         cover_urls = self._cover_urls(html)
@@ -126,7 +207,7 @@ class Spider(Spider):
             cover = data.get('cover') or {}
             pic = cover.get('url') or cover.get('fallback_url') or (cover_urls[len(out)] if len(out) < len(cover_urls) else '')
             latest = data.get('latest_episode_number')
-            out.append({"vod_id": self._abs(vid), "vod_name": title, "vod_pic": self._abs(pic), "vod_remarks": ('更新至' + str(latest) + '集') if latest else '', "style": {"type": "rect", "ratio": 0.75}})
+            out.append({"vod_id": self._abs(vid), "vod_name": title, "vod_pic": self._cover_candidates(pic, cover.get('fallback_url')), "vod_remarks": ('更新至' + str(latest) + '集') if latest else '', "style": {"type": "rect", "ratio": 0.75}})
         if out:
             return out
         modern_cards = re.findall(r'<article\s+data-xpch=["\']card-drama["\'][^>]*>.*?</article>', html or '', re.S | re.I)
@@ -142,7 +223,8 @@ class Spider(Spider):
                     continue
                 seen.add(vid)
                 ep = re.search(r'(?:全|更新至)\s*(\d+)\s*集', item, re.I)
-                out.append({"vod_id": self._abs(vid), "vod_name": title, "vod_pic": cover_urls[len(out)] if len(out) < len(cover_urls) else self._pic(item), "vod_remarks": ('更新至' + ep.group(1) + '集') if ep else '', "style": {"type": "rect", "ratio": 0.75}})
+                raw_pic = cover_urls[len(out)] if len(out) < len(cover_urls) else self._pic(item)
+                out.append({"vod_id": self._abs(vid), "vod_name": title, "vod_pic": self._cover_candidates(raw_pic), "vod_remarks": ('更新至' + ep.group(1) + '集') if ep else '', "style": {"type": "rect", "ratio": 0.75}})
             return out
         for m in re.finditer(r'<div class="card">(.*?)</div>', html, re.S):
             item = m.group(1)
@@ -155,7 +237,7 @@ class Spider(Spider):
                 continue
             seen.add(vid)
             em = re.search(r'<i class="card-ep num">(.*?)</i>', item)
-            out.append({"vod_id": self._abs(vid), "vod_name": nm.group(1).strip(), "vod_pic": self._pic(item), "vod_remarks": em.group(1).strip() if em else '', "style": {"type": "rect", "ratio": 0.75}})
+            out.append({"vod_id": self._abs(vid), "vod_name": nm.group(1).strip(), "vod_pic": self._cover_candidates(self._pic(item)), "vod_remarks": em.group(1).strip() if em else '', "style": {"type": "rect", "ratio": 0.75}})
         return out
     def homeContent(self, filter):
         cs = [{"type_name": "全部", "type_id": "home"}, {"type_name": "原创", "type_id": "yuanchuang"}, {"type_name": "魔改", "type_id": "mogai"}, {"type_name": "AI漫剧", "type_id": "manju"}, {"type_name": "真人短剧", "type_id": "zhenren"}, {"type_name": "AI短剧", "type_id": "aiduanju"}] + [{"type_name": n, "type_id": t} for t, n in self.TAGS]
@@ -179,9 +261,7 @@ class Spider(Spider):
             html = self._get(u1)
             if not html:
                 return [], 1
-            i = html.find('foot-grid')
-            seg = html[:i] if i > 0 else html
-            ls = self._cards(seg)[:self.page_size]
+            ls = self._cards(html)[:self.page_size]
             tot = re.search(r'共 (\d+) 部', html)
             return ls, math.ceil(int(tot.group(1)) / self.page_size) if tot else 1
         u = up(pg)
@@ -198,9 +278,7 @@ class Spider(Spider):
         html = self._get(u)
         if not html:
             return [], pg
-        i = html.find('foot-grid')
-        seg = html[:i] if i > 0 else html
-        ls = self._cards(seg)
+        ls = self._cards(html)
         if len(ls) > self.page_size:
             ls = ls[-self.page_size:]
         return ls, pg + 1 if ls else pg
@@ -266,6 +344,7 @@ class Spider(Spider):
             return {
                 'title': drama.get('title') or '',
                 'intro': drama.get('intro') or '',
+                'drama': drama,
                 'totalEp': int(drama.get('total_episode_count') or 0),
                 'line': '',
                 'current': data.get('episode') or {},
@@ -317,19 +396,22 @@ class Spider(Spider):
             title = tm.group(1).strip() if tm else slug
         poster = ''
         if d:
-            eps0 = (d.get('episodes') or [{}])[0]
-            poster = eps0.get('poster') or (d.get('media') or {}).get('poster_url') or ''
+            drama_cover = (d.get('drama') or {}).get('cover') or {}
+            poster = drama_cover.get('url') or drama_cover.get('fallback_url') or (d.get('media') or {}).get('poster_url') or ''
+        detail_html = self._get(f'{self.site_url}/drama/{slug}')
+        nuxt_drama = self._nuxt_drama(detail_html, slug)
+        cover = nuxt_drama.get('cover') or {}
+        poster = cover.get('url') or poster
         if not poster:
-            html = self._get(f'{self.site_url}/drama/{slug}')
-            om = re.search(r'<meta[^>]+property="og:image"[^>]+content="([^"]+)"', html or '')
+            om = re.search(r'<meta[^>]+property="og:image"[^>]+content="([^"]+)"', detail_html or '')
             if om:
-                poster = om.group(1)
+                poster = poster or om.group(1)
         total = int((d or {}).get('totalEp') or 0)
         urls = []
         if total > 0:
             for n in range(1, total + 1):
                 urls.append(f'第{n}集$' + f'{self.site_url}/play/{slug}/{n}')
-        vod = {"vod_id": vid, "vod_name": title, "vod_pic": self._abs(poster), "vod_remarks": f'更新至 {total} 集' if total else '', "type_name": (d or {}).get('line') or '', "vod_play_from": "主线路", "vod_play_url": '#'.join(urls)}
+        vod = {"vod_id": vid, "vod_name": title, "vod_pic": self._cover_candidates(poster, cover.get('fallback_url')), "vod_remarks": f'更新至 {total} 集' if total else '', "type_name": (d or {}).get('line') or '', "vod_play_from": "主线路", "vod_play_url": '#'.join(urls)}
         return {"list": [vod]}
     def searchContent(self, key, quick, pg='1'):
         if not (key or '').strip():
