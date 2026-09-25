@@ -146,6 +146,10 @@ class Spider(Spider):
                     page = value.get('page')
                     if isinstance(page, dict) and isinstance(page.get('items'), list):
                         return page.get('items')
+                    if isinstance(value.get('items'), list) and value.get('items') and isinstance(value['items'][0], dict) and value['items'][0].get('title'):
+                        return value['items']
+                    if isinstance(value.get('dramas'), list) and value.get('dramas') and isinstance(value['dramas'][0], dict) and value['dramas'][0].get('title'):
+                        return value['dramas']
                     for child in value.values():
                         found = find_items(child, seen)
                         if found:
@@ -195,7 +199,7 @@ class Spider(Spider):
         for data in self._nuxt_items(html):
             if not isinstance(data, dict):
                 continue
-            vid = data.get('primary_route') or data.get('detail_route') or ''
+            vid = data.get('primary_route') or data.get('detail_route') or data.get('route') or ''
             if vid.startswith('/drama/'):
                 vid = vid.replace('/drama/', '/play/', 1) + '/' + str(data.get('latest_episode_number') or 1)
             elif not vid.startswith('/play/') and data.get('slug'):
@@ -204,9 +208,10 @@ class Spider(Spider):
             if not vid or not title or vid in seen:
                 continue
             seen.add(vid)
-            cover = data.get('cover') or {}
-            pic = cover.get('url') or cover.get('fallback_url') or (cover_urls[len(out)] if len(out) < len(cover_urls) else '')
-            latest = data.get('latest_episode_number')
+            cover = data.get('cover') if isinstance(data.get('cover'), dict) else {}
+            raw_cover = data.get('cover') if isinstance(data.get('cover'), str) else ''
+            pic = raw_cover or cover.get('url') or cover.get('fallback_url') or data.get('cover_fallback_url') or (cover_urls[len(out)] if len(out) < len(cover_urls) else '')
+            latest = data.get('latest_episode_number') or data.get('total_episodes')
             out.append({"vod_id": self._abs(vid), "vod_name": title, "vod_pic": self._cover_candidates(pic, cover.get('fallback_url')), "vod_remarks": ('更新至' + str(latest) + '集') if latest else '', "style": {"type": "rect", "ratio": 0.75}})
         if out:
             return out
@@ -254,7 +259,7 @@ class Spider(Spider):
             u1, up = f'{self.site_url}/tag/{t}', lambda n: f'{self.site_url}/tag/{t}?page={n}'
         elif s == 'search':
             qs = quote(q or '')
-            u1, up = f'{self.site_url}/search?q={qs}', lambda n: f'{self.site_url}/search?q={qs}&page={n}'
+            u1, up = f'{self.site_url}/search/{qs}', lambda n: f'{self.site_url}/search/{qs}?page={n}'
         else:
             u1, up = f'{self.site_url}/{s}', lambda n: f'{self.site_url}/{s}?page={n}'
         if pg <= 1:
