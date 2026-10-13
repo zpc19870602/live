@@ -1,5 +1,5 @@
 {
-    "spider": "https://file.icve.com.cn/file_doc/623/368/9BF5C1F491CC633FF14E1FEE5C91DAA9.jpg;md5;9bf5c1f491cc633ff14e1fee5c91daa9",
+    "spider": "https://xiuxiu-pro-new.meitudata.com/posters/224984cc747efdb5fb1a529803032e0f.jpg;md5;c9024ccf34209d26eb556c728c3f07fa",
     "wallpaper": "https://饭的动态壁纸.xxooo.cf/",
     "sites": [
         {
@@ -497,6 +497,7 @@
 {"key":"♥️UU影视","name":"❤UU影视","type":3,"api":"https://gh-proxy.org/https://raw.githubusercontent.com/zpc19870602/live/refs/heads/main/UU影视.py","searchable":1,"changeable":0},
 {"key":"♥️fofo影院","name":"❤fofo影院","type":3,"api":"https://gh-proxy.org/https://raw.githubusercontent.com/zpc19870602/live/refs/heads/main/fofo影院.py","searchable":1,"changeable":0},
 {"key":"♥️红果短剧","name":"❤红果短剧","type":3,"api":"https://gh-proxy.org/https://raw.githubusercontent.com/zpc19870602/live/refs/heads/main/红果短剧.py","searchable":1,"changeable":0},
+{"key":"♥️真果鉴","name":"❤真果鉴","type":3,"api":"https://gh-proxy.org/https://raw.githubusercontent.com/zpc19870602/live/refs/heads/main/真果鉴.py","searchable":1,"changeable":0},
 {"key":"♥️禁漫天堂","name":"❤禁漫天堂","type":3,"api":"https://gh-proxy.org/https://raw.githubusercontent.com/zpc19870602/live/refs/heads/main/禁漫天堂.js","searchable":1,"changeable":0},
 {"key" : "🍁黄瓜短剧","name" : "🍁黄瓜短剧","type" : 3,"category" : "点播","api" : "https://gh-proxy.org/https://raw.githubusercontent.com/zpc19870602/live/refs/heads/main/瓜瓜短剧[色].py","jar":"https://cnb.cool/fish2035/xs/-/git/raw/main/spider.jar"}],
     "rules": [
@@ -521,12 +522,6 @@
         "images.67c6c7a.com=fan.cloudflare.182682.xyz"
     ],
     "lives": [
-        {
-            "name": "Kimentanm",
-            "type": 0,
-            "url": "https://gh.927223.xyz/https://raw.githubusercontent.com/Kimentanm/aptv/master/m3u/iptv.m3u",
-            "playerType": 2
-        },
         {
             "name": "天涯直播1",
             "type": 0,
@@ -553,6 +548,12 @@
             "playerType": 2
         },
         {
+            "name": "Kimentanm",
+            "type": 0,
+            "url": "https://ghproxy.net/https://raw.githubusercontent.com/Kimentanm/aptv/master/m3u/iptv.m3u",
+            "playerType": 2
+        },
+        {
             "name": "范明明（需开启V6网络）",
             "type": 0,
             "url": "https://nos.netease.com/ysf/3d75a78a0fc7ede372c03598d6d10367.m3u",
@@ -561,7 +562,7 @@
         {
             "name": "虎牙一起看",
             "type": 0,
-            "url": "https://file.icve.com.cn/file_doc/946/41/ECB0A5FBED1D8C4D4E049E95DB9F756F.m3u",
+            "url": "https://sub.ottiptv.cc/huyayqk.m3u",
             "playerType": 2,
             "timeout": 10,
             "ua": "okHttp/Mod-1.5.0.0"
@@ -569,15 +570,7 @@
         {
             "name": "斗鱼一起看",
             "type": 0,
-            "url": "https://file.icve.com.cn/file_doc/254/346/3FB56B2C49DF92B3252352FBE5CD00F1.m3u",
-            "playerType": 2,
-            "timeout": 10,
-            "ua": "okHttp/Mod-1.5.0.0"
-        },
-        {
-            "name": "B站直播",
-            "type": 0,
-            "url": "https://file.icve.com.cn/file_doc/220/1003/370FAE41BD301F89BA1FCD6FDB8D5BD6.m3u",
+            "url": "https://sub.ottiptv.cc/douyuyqk.m3u",
             "playerType": 2,
             "timeout": 10,
             "ua": "okHttp/Mod-1.5.0.0"
@@ -585,7 +578,7 @@
         {
             "name": "YY轮播",
             "type": 0,
-            "url": "https://file.icve.com.cn/file_doc/178/700/2C9AF1F98DBC1523826C0CD4DA8D8947.m3u",
+            "url": "https://sub.ottiptv.cc/yylunbo.m3u",
             "playerType": 2,
             "timeout": 10,
             "ua": "okHttp/Mod-1.5.0.0"
