@@ -40,11 +40,16 @@ class Spider(Spider):
     primary = [("女主播", "girls"), ("情侣", "couples"),
                ("男主播", "men"), ("跨性别", "trans")]
     tags = [
-        ("新主播", "new"), ("VR摄像头", "vr-cams"), ("世锦赛", "world-tournament"),
-        ("少女18+", "teens"), ("鲜嫩青年22+", "young"), ("熟女", "milfs"),
-        ("成熟", "matures"), ("亚洲人", "asian"), ("拉丁人", "latina"),
-        ("运动型", "athletic"), ("丰满", "curvy"), ("金发", "blondes"),
-        ("黑发", "brunettes"), ("户外", "outdoor"), ("恋足", "feet"),
+        ("中文", "tagLanguageChinese"), ("新主播", "autoTagNew"),
+        ("VR摄像头", "autoTagVr"), ("团体秀", "groupShow"),
+        ("少女18+", "ageTeen"), ("鲜嫩青年22+", "ageYoung"),
+        ("熟女", "ageMilf"), ("成熟", "ageMature"),
+        ("亚洲人", "ethnicityAsian"), ("白人", "ethnicityWhite"),
+        ("拉丁人", "ethnicityLatino"), ("黑人", "ethnicityEbony"),
+        ("娇小", "bodyTypePetite"), ("运动型", "bodyTypeAthletic"),
+        ("标准体型", "bodyTypeMedium"), ("丰满", "bodyTypeCurvy"),
+        ("金发", "hairColorBlonde"), ("棕发", "hairColorBrown"),
+        ("黑发", "hairColorBlack"), ("红发", "hairColorRed"),
     ]
 
     def init(self, extend=""):
@@ -66,10 +71,14 @@ class Spider(Spider):
             "Origin": self.site_url,
             "Referer": self.site_url + "/",
         }
+        self._country_cache = {}
 
     def _get(self, url, headers=None):
         try:
-            resp = self.fetch(url, headers=headers or self.headers)
+            try:
+                resp = self.fetch(url, headers=headers or self.headers, timeout=15)
+            except TypeError:
+                resp = self.fetch(url, headers=headers or self.headers)
             if not resp:
                 return ""
             text = getattr(resp, "text", None)
@@ -98,31 +107,52 @@ class Spider(Spider):
     def _public(model):
         return str(model.get("status", "")) == "public" and model.get("isOnline", True) is not False
 
-    def _models(self, primary="girls", tag="", page=1):
-        # ``country:`` is eight characters; use its length rather than a
-        # hard-coded offset (the previous offset dropped the first ISO letter,
-        # making every country filter return an empty list).
-        country_code = tag[len("country:"):] if str(tag).startswith("country:") else ""
-        # Country filtering is no longer accepted by filterGroupTags. Fetch a
-        # larger API window and filter the explicit ISO country field locally.
-        request_size = 99 if country_code else self.page_size
-        offset = max(int(page or 1) - 1, 0) * request_size
+    def _request_models(self, primary, offset, limit, tag=""):
         params = {
-            "limit": request_size, "offset": offset, "primaryTag": primary,
-            "sortBy": "stripRanking", "uniq": str(int(__import__("time").time() * 1000)),
+            "limit": limit, "offset": offset, "primaryTag": primary,
+            "sortBy": "stripRanking",
         }
-        if tag and not country_code:
+        if tag:
             params["filterGroupTags"] = json.dumps([[tag]], ensure_ascii=False, separators=(",", ":"))
         url = self.site_url + "/api/front/models?" + urllib.parse.urlencode(params)
         try:
             data = json.loads(self._get(url))
         except Exception:
             data = {}
-        models = data.get("models", []) if isinstance(data, dict) else []
-        models = [m for m in models if isinstance(m, dict) and self._public(m)]
-        if country_code:
-            models = [m for m in models if str(m.get("country", "")).lower() == country_code]
-        return models[:self.page_size]
+        raw_models = data.get("models", []) if isinstance(data, dict) else []
+        models = [m for m in raw_models if isinstance(m, dict) and self._public(m)]
+        total = data.get("filteredCount", 0) if isinstance(data, dict) else 0
+        return models, total if isinstance(total, int) else 0, len(raw_models)
+
+    def _country_models(self, primary, country_code, page, tag=""):
+        key = (primary, tag)
+        state = self._country_cache.setdefault(key, {"models": [], "seen": set(), "offset": 0, "done": False})
+        wanted = max(1, int(page or 1)) * self.page_size + 1
+        while len([m for m in state["models"] if str(m.get("country", "")).lower() == country_code]) < wanted and not state["done"]:
+            models, _, raw_count = self._request_models(primary, state["offset"], 99, tag)
+            for model in models:
+                marker = str(model.get("id") or model.get("username") or "").lower()
+                if marker and marker not in state["seen"]:
+                    state["seen"].add(marker)
+                    state["models"].append(model)
+            state["offset"] += 99
+            if raw_count < 99 or state["offset"] >= 1089:
+                state["done"] = True
+        start = (max(1, int(page or 1)) - 1) * self.page_size
+        items = [m for m in state["models"] if str(m.get("country", "")).lower() == country_code]
+        pagecount = max(1, int(page or 1) + int(len(items) > start + self.page_size or not state["done"]))
+        return items, pagecount
+
+    @staticmethod
+    def _extend(value):
+        if isinstance(value, dict):
+            return value
+        if isinstance(value, str) and value.strip():
+            try:
+                value = json.loads(value)
+            except (TypeError, ValueError):
+                return {}
+        return value if isinstance(value, dict) else {}
 
     @staticmethod
     def _room(model):
@@ -159,7 +189,7 @@ class Spider(Spider):
 
     @staticmethod
     def _auto_source(data):
-        """Build the auto master URL while preserving the CDN edge host."""
+        """Build a standard-HLS master URL on the model's current CDN edge."""
         ident = str(data.get("id") or "").strip()
         original = str(data.get("h") or "").strip()
         if original:
@@ -168,14 +198,14 @@ class Spider(Spider):
             # edge pool changes frequently and a hard-coded host can stall).
             converted = re.sub(
                 r"/master/([^/]+?)(?:_\d+p(?:60)?|_auto)?\.m3u8(?:\?.*)?$",
-                r"/master/\1_auto.m3u8?playlistType=lowLatency",
+                r"/master/\1_auto.m3u8",
                 original,
                 flags=re.I,
             )
             if converted != original or "/master/" in original:
                 return converted
         if ident:
-            return "https://edge-hls.doppiocdn.media/hls/%s/master/%s_auto.m3u8?playlistType=lowLatency" % (ident, ident)
+            return "https://edge-hls.doppiocdn.media/hls/%s/master/%s_auto.m3u8" % (ident, ident)
         return original
 
     def _book(self, model):
@@ -216,8 +246,21 @@ class Spider(Spider):
             classes.append({"type_id": "c:" + key, "type_name": name})
         for name, key in self.tags:
             classes.append({"type_id": "t:" + key, "type_name": name})
-        models = self._models("girls", "", 1)
-        return {"class": classes, "list": [self._book(m) for m in models]}
+        models, _, _ = self._request_models("girls", 0, self.page_size)
+        result = {"class": classes, "list": [self._book(m) for m in models]}
+        if filter:
+            result["filters"] = {item["type_id"]: self._filter_rows() for item in classes}
+        return result
+
+    def _filter_rows(self):
+        return [
+            {"key": "tag", "name": "标签", "init": "", "value": [
+                {"n": name, "v": key} for name, key in self.tags
+            ]},
+            {"key": "country", "name": "国家", "init": "", "value": [
+                {"n": name, "v": code} for name, code in self.countries
+            ]},
+        ]
 
     def homeVideoContent(self):
         return self.homeContent(False)
@@ -225,16 +268,30 @@ class Spider(Spider):
     def categoryContent(self, tid, pg, filter, extend):
         tid = str(tid or "")
         page = int(pg or 1)
+        extend = self._extend(extend)
         primary, tag = "girls", ""
+        country_code = ""
         if tid.startswith("p:"):
             primary = tid[2:] or "girls"
         elif tid.startswith("c:"):
-            tag = "country:" + tid[2:]
+            country_code = tid[2:].lower()
         elif tid.startswith("t:"):
             tag = tid[2:]
-        models = self._models(primary, tag, page)
-        return {"list": [self._book(m) for m in models], "page": page,
-                "pagecount": 9999, "limit": self.page_size, "total": 0}
+        if extend.get("tag") in {key for _, key in self.tags}:
+            tag = extend["tag"]
+        if extend.get("country") in {code for _, code in self.countries}:
+            country_code = extend["country"]
+        if country_code:
+            models, pagecount = self._country_models(primary, country_code, page, tag)
+            total = 0
+        else:
+            models, total, _ = self._request_models(primary, (page - 1) * self.page_size, self.page_size, tag)
+            pagecount = max(1, (total + self.page_size - 1) // self.page_size) if total else max(1, page + int(len(models) == self.page_size))
+        result = {"list": [self._book(m) for m in models], "page": page,
+                  "pagecount": pagecount, "limit": self.page_size}
+        if total:
+            result["total"] = total
+        return result
 
     def detailContent(self, ids):
         if not ids:
@@ -345,15 +402,7 @@ class Spider(Spider):
             return uri
 
     def _rewrite_m3u8(self, text, base_url):
-        """Rewrite Mouflon media URLs into a TVBox-friendly HLS playlist.
-
-        FongMi's Android player can consume LL-HLS PART requests directly,
-        but a number of TVBox builds cannot: they repeatedly request the
-        ``media.mp4`` preload placeholder and stall.  We therefore keep the
-        regular two-second EXTINF segments (whose Mouflon tokens are decoded)
-        and remove LL-HLS-only tags.  This costs a small amount of latency but
-        avoids the retry/buffering loop that causes severe stutter.
-        """
+        """Replace Mouflon's placeholder URIs with its decoded media URLs."""
         lines = str(text or "").splitlines()
         pkey = "NTK9aqcLmNFMWrpQ" if "#EXT-X-MOUFLON:PSCH:v2:" in text else ""
         out, pending_stream, pending_mouflon = [], False, ""
@@ -374,17 +423,15 @@ class Spider(Spider):
             if line.startswith("#EXT-X-MOUFLON:URI:"):
                 pending_mouflon = self._decode_mouflon_uri(line[len("#EXT-X-MOUFLON:URI:"):].strip())
                 continue
-            if line.startswith("#EXT-X-PART:") and 'URI=' in line:
-                # Drop LL-HLS partial segments.  The following EXTINF entry
-                # carries a complete, decoded MP4 segment for TVBox players.
+            if line.startswith("#EXT-X-PART:") and pending_mouflon:
+                line = re.sub(r'URI="[^"]+"', lambda _: 'URI="%s"' % pending_mouflon, line, count=1)
+                pending_mouflon = ""
+                out.append(line)
                 continue
-            if line.startswith(("#EXT-X-PART-INF:", "#EXT-X-SERVER-CONTROL:", "#EXT-X-RENDITION-REPORT:")):
+            if line.startswith("#EXT-X-MOUFLON:"):
                 continue
             if line.startswith("#EXT-X-MAP:") or line.startswith("#EXT-X-PRELOAD-HINT:"):
-                # Mouflon advertises a placeholder ``media.mp4`` preload URI;
-                # it is not a real segment (404) and makes ExoPlayer retry and
-                # stall.  The MgRead/FongMi implementation drops this hint.
-                if line.startswith("#EXT-X-PRELOAD-HINT:"):
+                if line.startswith("#EXT-X-PRELOAD-HINT:") and "media.mp4" in line:
                     continue
                 line = re.sub(r'URI="([^"]+)"', lambda m: 'URI="%s"' % urljoin(base_url, m.group(1)), line, count=1)
                 out.append(line)
@@ -406,13 +453,11 @@ class Spider(Spider):
         """Serve and rewrite HLS playlists; pass binary segments through."""
         try:
             upstream = param.get("url", "") if isinstance(param, dict) else ""
-            upstream = urllib.parse.unquote(str(upstream or "")).strip()
+            upstream = str(upstream or "").strip()
             if not upstream.startswith(("http://", "https://")):
                 return [400, "text/plain; charset=utf-8", b"Bad Request"]
-            # A live playlist may wait briefly for the next segment when
-            # ``playlistType=lowLatency`` is enabled.  The FongMi base Spider
-            # defaults requests to five seconds; allow a little more headroom
-            # so a slow CDN round-trip is not turned into a playback stall.
+            # Keep a little headroom for live playlist reloads; the base Spider
+            # defaults requests to five seconds.
             try:
                 response = self.fetch(upstream, headers=self.hls_headers, timeout=12)
             except TypeError:
@@ -423,11 +468,12 @@ class Spider(Spider):
             if not isinstance(body, bytes):
                 body = str(getattr(response, "text", body)).encode("utf-8")
             content_type = str(getattr(response, "headers", {}).get("Content-Type", ""))
+            status = int(getattr(response, "status_code", 200) or 200)
             if "#EXTM3U" in body[:128].decode("utf-8", "ignore") or upstream.lower().split("?", 1)[0].endswith((".m3u8", ".m3u")):
                 rewritten = self._rewrite_m3u8(body.decode("utf-8", "ignore"), upstream)
-                return [200, "application/vnd.apple.mpegurl", rewritten.encode("utf-8"),
+                return [status, "application/vnd.apple.mpegurl", rewritten.encode("utf-8"),
                         {"Cache-Control": "no-cache, no-store", "Access-Control-Allow-Origin": "*"}]
-            return [200, content_type or "application/octet-stream", body,
+            return [status, content_type or "application/octet-stream", body,
                     {"Cache-Control": "no-cache, no-store", "Access-Control-Allow-Origin": "*"}]
         except Exception as exc:
             return [502, "text/plain; charset=utf-8", ("Proxy Error: " + str(exc)).encode("utf-8")]
