@@ -29,7 +29,8 @@ class Spider(Spider):
         self.headers = {"User-Agent": "Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Mobile Safari/537.36", "Referer": self.site_url, "Accept-Language": "zh-CN,zh;q=0.9"}
         self.sess = requests.Session()
         requests.packages.urllib3.disable_warnings()
-        self.page_size = 20
+        # 站点列表接口每页返回 30 条，分页由站点自身完成。
+        self.page_size = 30
     def _get(self, url, hdr=None, t=15):
         try:
             hh = self.headers
@@ -164,6 +165,53 @@ class Spider(Spider):
         except Exception:
             return []
 
+    def _nuxt_page_info(self, html):
+        """读取 Nuxt 页面中的分页元数据，兼容 browse 与 tag 两种字段名。"""
+        m = re.search(r'<script[^>]+id=["\']__NUXT_DATA__["\'][^>]*>(.*?)</script>', html or '', re.S | re.I)
+        if not m:
+            return {}
+        try:
+            table = json.loads(m.group(1))
+            resolving = set()
+            def resolve_entry(index):
+                if index < 0 or index >= len(table):
+                    return index
+                if index in resolving:
+                    return table[index]
+                value = table[index]
+                if not isinstance(value, (dict, list)):
+                    return value
+                resolving.add(index)
+                if isinstance(value, list):
+                    out = [resolve_entry(x) if isinstance(x, int) and not isinstance(x, bool) and 0 <= x < len(table) else x for x in value]
+                else:
+                    out = {k: (resolve_entry(v) if isinstance(v, int) and not isinstance(v, bool) and 0 <= v < len(table) else v) for k, v in value.items()}
+                resolving.remove(index)
+                return out
+            root = resolve_entry(0)
+            seen = set()
+            def find(value):
+                if not isinstance(value, (dict, list)) or id(value) in seen:
+                    return {}
+                seen.add(id(value))
+                if isinstance(value, dict):
+                    page = value.get('pagination')
+                    if isinstance(page, dict) and any(k in page for k in ('page_size', 'dramas_page_size')):
+                        return page
+                    for child in value.values():
+                        found = find(child)
+                        if found:
+                            return found
+                else:
+                    for child in value:
+                        found = find(child)
+                        if found:
+                            return found
+                return {}
+            return find(root)
+        except Exception:
+            return {}
+
     def _nuxt_drama(self, html, slug):
         m = re.search(r'<script[^>]+id=["\']__NUXT_DATA__["\'][^>]*>(.*?)</script>', html or '', re.S | re.I)
         if not m:
@@ -253,44 +301,41 @@ class Spider(Spider):
     def _list(self, tid, pg, q=''):
         s = str(tid)
         if s in ('home', 'browse'):
-            u1, up = f'{self.site_url}/browse', lambda n: f'{self.site_url}/browse?page={n}'
+            u1, up = f'{self.site_url}/browse', lambda n: f'{self.site_url}/browse/page-{n}'
         elif s.startswith('tag:'):
             t = s[4:]
-            u1, up = f'{self.site_url}/tag/{t}', lambda n: f'{self.site_url}/tag/{t}?page={n}'
+            u1, up = f'{self.site_url}/tag/{t}', lambda n: f'{self.site_url}/tag/{t}/page-{n}'
         elif s == 'search':
             qs = quote(q or '')
-            u1, up = f'{self.site_url}/search/{qs}', lambda n: f'{self.site_url}/search/{qs}?page={n}'
+            u1, up = f'{self.site_url}/search/{qs}', lambda n: f'{self.site_url}/search/{qs}/page-{n}'
         else:
-            u1, up = f'{self.site_url}/{s}', lambda n: f'{self.site_url}/{s}?page={n}'
-        if pg <= 1:
-            html = self._get(u1)
-            if not html:
-                return [], 1
-            ls = self._cards(html)[:self.page_size]
-            tot = re.search(r'共 (\d+) 部', html)
-            return ls, math.ceil(int(tot.group(1)) / self.page_size) if tot else 1
-        u = up(pg)
-        raw = self._get(u + ('&' if '?' in u else '?') + 'partial=1', {'X-Requested-With': 'fetch'})
-        d = None
-        if raw:
-            try:
-                d = json.loads(raw)
-            except Exception:
-                d = None
-        if isinstance(d, dict) and d.get('html') is not None:
-            ls = self._cards(d.get('html') or '')[:self.page_size]
-            return ls, int(d.get('pages') or (pg + 1 if ls else pg))
-        html = self._get(u)
+            u1, up = f'{self.site_url}/{s}', lambda n: f'{self.site_url}/{s}/page-{n}'
+        html = self._get(u1 if pg <= 1 else up(pg))
         if not html:
-            return [], pg
+            return [], 1, self.page_size, None
+        info = self._nuxt_page_info(html)
+        actual_page = info.get('page')
+        if pg > 1 and isinstance(actual_page, int) and actual_page != pg:
+            total = int(info['total']) if info.get('total') is not None else None
+            return [], int(info.get('pages') or info.get('total_pages') or 1), self.page_size, total
         ls = self._cards(html)
-        if len(ls) > self.page_size:
-            ls = ls[-self.page_size:]
-        return ls, pg + 1 if ls else pg
+        limit = int(info.get('page_size') or info.get('dramas_page_size') or self.page_size)
+        total = int(info['total']) if info.get('total') is not None else None
+        pc = int(info.get('pages') or info.get('total_pages') or 0)
+        if not pc and total is not None and total > 0:
+            pc = math.ceil(total / limit)
+        if not pc and isinstance(actual_page, int) and info.get('dramas_has_more') is True:
+            pc = actual_page + 1
+        if not pc and isinstance(actual_page, int):
+            pc = actual_page
+        return ls, pc or 1, limit, total
     def categoryContent(self, tid, pg='1', filter='', extend=''):
         pg = int(pg) if str(pg).isdigit() else 1
-        ls, pc = self._list(str(tid), pg)
-        return {"list": ls, "page": pg, "pagecount": pc, "limit": self.page_size, "total": len(ls) if ls else 0}
+        ls, pc, limit, total = self._list(str(tid), pg)
+        result = {"list": ls, "page": pg, "pagecount": pc, "limit": limit}
+        if total is not None:
+            result["total"] = total
+        return result
     def _hg(self, url):
         html = self._get(url)
         if not html:
@@ -422,8 +467,11 @@ class Spider(Spider):
         if not (key or '').strip():
             return {"list": []}
         pg = int(pg) if str(pg).isdigit() else 1
-        ls, pc = self._list('search', pg, str(key).strip())
-        return {"list": ls, "page": pg, "pagecount": pc, "limit": self.page_size, "total": len(ls)}
+        ls, pc, limit, total = self._list('search', pg, str(key).strip())
+        result = {"list": ls, "page": pg, "pagecount": pc, "limit": limit}
+        if total is not None:
+            result["total"] = total
+        return result
     def playerContent(self, flag, id, vipFlags):
         u = id.split("$")[1] if "$" in id else id
         m = re.search(r'/play/([^/?#]+)/(\d+)(?:[/?#]|$)', u)
