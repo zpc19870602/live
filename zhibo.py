@@ -174,7 +174,7 @@ class Spider(Spider):
 
     @staticmethod
     def _qualities(presets):
-        """Return selectable numeric resolutions advertised by the API."""
+        """Sort explicit resolutions from presets or the live master."""
         values = []
         for item in presets or []:
             value = str(item or "").strip().lower()
@@ -182,7 +182,7 @@ class Spider(Spider):
             # not useful as a user-facing quality choice.
             if re.match(r"^\d+p(?:60)?$", value):
                 values.append(value)
-        values = sorted(set(values), key=lambda x: (int(re.match(r"\d+", x).group()), "60" in x), reverse=True)
+        values = sorted(set(values), key=lambda x: (int(re.match(r"\d+", x).group()), x.endswith("p60")), reverse=True)
         # TVBox's quality selector should contain only explicit renditions;
         # putting the highest resolution first makes it the default choice.
         return values
@@ -302,9 +302,13 @@ class Spider(Spider):
                               "vod_play_url": "网页观看$" + value}]}
         data = self._query(value)
         name = data.get("u", "直播间")
-        hls = self._hls(data)
         presets = [x for x in str(data.get("ps", "")).split(",") if x]
-        qualities = self._qualities(presets) or ["480p"]
+        # The catalogue omits the source rendition (often 960p/1080p).
+        # Discover actual choices only when opening a room, as the website does.
+        master = self._get(self._auto_source(data), self.hls_headers)
+        qualities = self._qualities([label for label, _ in self._master_variants(master)])
+        if not qualities:
+            qualities = self._qualities(presets) or ["480p"]
         play_items = [q + "$" + self._hls(data, q) for q in qualities]
         return {"list": [{"vod_id": value, "vod_name": name, "vod_pic": data.get("c", ""),
                           "vod_actor": self._status(data.get("s")),
@@ -339,9 +343,7 @@ class Spider(Spider):
         return {k: v[0] for k, v in urllib.parse.parse_qs(parsed.query).items()}
 
     @staticmethod
-    def _quality_url(master, quality="auto"):
-        pkey_match = re.findall(r"#EXT-X-MOUFLON:PSCH:v2:([^\r\n]+)", master or "")
-        pkey = "NTK9aqcLmNFMWrpQ" if pkey_match else ""
+    def _master_variants(master):
         items = []
         lines = (master or "").splitlines()
         pending = False
@@ -353,16 +355,27 @@ class Spider(Spider):
                 res = re.search(r"RESOLUTION=\d+x(\d+)", pending, re.I)
                 name_match = re.search(r'NAME="([^"]+)"', pending, re.I)
                 name = name_match.group(1).lower() if name_match else ""
+                fps_match = re.search(r"FRAME-RATE=([\d.]+)", pending, re.I)
+                high_fps = fps_match and float(fps_match.group(1)) >= 50
                 # Providers often label the highest rendition as ``source``;
                 # expose its numeric resolution so an explicit 720p/1080p
                 # request can still select it.
                 label = (res.group(1) + "p") if res and (not name or name in ("source", "auto", "原画")) else (name or (res.group(1) + "p" if res else "auto"))
+                if high_fps and re.fullmatch(r"\d+p", label):
+                    label += "60"
                 items.append((label, line))
                 pending = False
+        return items
+
+    @staticmethod
+    def _quality_url(master, quality="auto"):
+        pkey_match = re.findall(r"#EXT-X-MOUFLON:PSCH:v2:([^\r\n]+)", master or "")
+        pkey = "NTK9aqcLmNFMWrpQ" if pkey_match else ""
+        items = Spider._master_variants(master)
         target = str(quality or "").lower()
         selected = None
         for label, url in items:
-            if target and (target in label or label in target):
+            if target == label:
                 selected = url
                 break
         if not selected and items:
@@ -488,6 +501,8 @@ class Spider(Spider):
             if source:
                 master = self._get(source, self.hls_headers)
                 chosen = self._quality_url(master, data.get("quality", ""))
+                if chosen:
+                    chosen = urljoin(source, chosen)
                 stream_headers = dict(self.hls_headers)
                 stream_headers["Referer"] = self.site_url + "/" + urllib.parse.quote(data.get("u", ""))
                 if chosen:
