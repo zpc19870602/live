@@ -498,7 +498,7 @@
 {"key":"♥️fofo影院","name":"❤fofo影院","type":3,"api":"https://gh-proxy.org/https://raw.githubusercontent.com/zpc19870602/live/refs/heads/main/fofo影院.py","searchable":1,"changeable":0},
 {"key":"♥️红果短剧","name":"❤红果短剧","type":3,"api":"https://gh-proxy.org/https://raw.githubusercontent.com/zpc19870602/live/refs/heads/main/红果短剧.py","searchable":1,"changeable":0},
 {"key":"♥️真果鉴","name":"❤真果鉴","type":3,"api":"https://gh-proxy.org/https://raw.githubusercontent.com/zpc19870602/live/refs/heads/main/真果鉴.py","searchable":1,"changeable":0},
-{"key":"♥️禁漫天堂","name":"❤禁漫天堂","type":3,"api":"https://gh-proxy.org/https://raw.githubusercontent.com/zpc19870602/live/refs/heads/main/禁漫天堂.js","searchable":1,"changeable":0},
+{"key":"♥️anyshort","name":"❤anyshort","type":3,"api":"https://gh-proxy.org/https://raw.githubusercontent.com/zpc19870602/live/refs/heads/main/AnyShort 短劇.py","searchable":1,"changeable":0},
 {"key" : "🍁黄瓜短剧","name" : "🍁黄瓜短剧","type" : 3,"category" : "点播","api" : "https://gh-proxy.org/https://raw.githubusercontent.com/zpc19870602/live/refs/heads/main/瓜瓜短剧[色].py","jar":"https://cnb.cool/fish2035/xs/-/git/raw/main/spider.jar"}],
     "rules": [
         {
